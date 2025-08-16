@@ -1,0 +1,21 @@
+[package]
+name = "web3-connection-tdd-test"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+ink = { version = "5.0.0", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+    "ink/std",
+]
+
+[[bin]]
+name = "web3_tdd_test"
+path = "web3_connection_tdd.rs"
+
+[lib]
+name = "web3_connection_tdd"
+path = "web3_connection_tdd.rs"

@@ -1,0 +1,4 @@
+# Configuração do Clippy para o projeto Launchpad
+
+# Permitir muitos argumentos em funções, comum em smart contracts
+too-many-arguments-threshold = 15

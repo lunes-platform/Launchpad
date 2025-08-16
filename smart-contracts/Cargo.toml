@@ -1,0 +1,22 @@
+[workspace]
+members = [
+    "contracts/launchpad",
+    "contracts/phases_demo",
+    # Adicione futuros contratos ou crates aqui.
+    # Ex: "contracts/outro_contrato",
+    #     "crates/shared_logic",
+]
+resolver = "2"
+
+# Perfil para builds de produção (`--release`)
+# Otimizado para tamanho de código (z) e segurança (panic=unwind).
+[profile.release]
+panic = "unwind"
+lto = true
+opt-level = "z"
+overflow-checks = false
+
+# Perfil para desenvolvimento (`cargo build`)
+# Falha rapidamente em caso de pânico (panic=abort).
+[profile.dev]
+panic = "abort"
