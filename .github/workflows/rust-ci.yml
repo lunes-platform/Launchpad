@@ -1,0 +1,45 @@
+name: Smart Contracts CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'smart-contracts/**'
+      - '.github/workflows/rust-ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'smart-contracts/**'
+      - '.github/workflows/rust-ci.yml'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: smart-contracts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            smart-contracts
+
+      - name: Build
+        run: cargo build --workspace --release
+
+      - name: Test
+        run: cargo test --workspace --all-features --verbose

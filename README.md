@@ -8,6 +8,8 @@ Uma plataforma de lançamento de projetos (launchpad) totalmente on-chain, const
 [![Rust](https://img.shields.io/badge/rust-stable-orange.svg)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Security](https://img.shields.io/badge/Security-Focused-green.svg)](docs/security/)
+![Frontend CI](https://github.com/lunes-platform/Launchpad/actions/workflows/frontend-ci.yml/badge.svg)
+![Smart Contracts CI](https://github.com/lunes-platform/Launchpad/actions/workflows/rust-ci.yml/badge.svg)
 
 ## 🎯 Visão Geral
 
@@ -42,10 +44,10 @@ A nova arquitetura é limpa e direta, promovendo a descentralização:
 
 ```bash
 # 1. Clone o repositório
-git clone <repository-url> launchpad-lunes
-cd launchpad-lunes
+git clone https://github.com/lunes-platform/Launchpad.git
+cd Launchpad
 
-# 2. Instale todas as dependências (Rust, ink!, Node.js)
+# 2. Instale dependências (Rust, ink!, Node.js) e prepare o ambiente
 # O script tornará os outros scripts executáveis
 ./scripts/setup/install-dependencies.sh
 
@@ -59,30 +61,34 @@ cd launchpad-lunes
 # 1. Execute todos os testes (Smart Contracts e Frontend)
 ./scripts/test/test-all.sh
 
-# 2. Compile todos os componentes para produção
-./scripts/build/build-all.sh
+# 2. Inicie o ambiente de desenvolvimento
+# Frontend (monorepo pnpm)
+cd frontend
+# escolha um pacote para rodar
+pnpm dev:showcase
+# ou
+pnpm dev:user-dashboard
+# ou
+pnpm dev:dev-dashboard
 
-# 3. Inicie o ambiente de desenvolvimento
-# Frontend
-cd frontend-new && npm run dev
-
-# Testes de Smart Contracts (em modo de observação)
-cd smart-contracts && cargo test --workspace -- --watch
+# 3. Testes/Build de Smart Contracts
+cd smart-contracts
+cargo test --workspace --all-features
+cargo build --workspace --release
 ```
 
 ## 📁 Estrutura do Projeto
 
 ```
-launchpad-lunes/
-├── smart-contracts/      # Smart Contracts em ink! 5.x
-│   └── upgradeable/      # Lógica principal dos contratos atualizáveis
-├── frontend-new/         # Aplicação Frontend (React + Vite)
+Launchpad/
+├── smart-contracts/      # Smart Contracts em ink! 5.x (workspace Rust)
+├── frontend/             # Monorepo PNPM com apps/packages React + Vite
 ├── docs/                 # Documentação completa do projeto
 │   ├── architecture/     # Desenhos de arquitetura e fluxos
 │   ├── guides/           # Guias de setup, uso e contribuição
 │   ├── reports/          # Relatórios de progresso e análises
 │   └── security/         # Auditorias e checklists de segurança
-└── scripts/              # Scripts de automação (setup, build, test)
+└── scripts/              # Scripts de automação (setup, test)
 ```
 
 ## 🧪 Testes (Metodologia TDD)
@@ -92,23 +98,23 @@ Este projeto segue rigorosamente a metodologia de Desenvolvimento Guiado por Tes
 ### Smart Contracts
 
 ```bash
-cd smart-contracts/upgradeable
-# 1. Escreva um teste que falhe em um dos arquivos _test.rs
-# 2. Implemente a funcionalidade no arquivo .rs correspondente
+cd smart-contracts
+# 1. Escreva um teste que falhe em um dos arquivos de teste
+# 2. Implemente a funcionalidade no módulo correspondente
 # 3. Execute os testes até que passem
-cargo test
-# 4. Verifique a cobertura dos testes
-cargo tarpaulin --out Html
+cargo test --workspace --all-features
+# 4. (Opcional) Verifique a cobertura dos testes (requer tarpaulin)
+cargo tarpaulin --workspace --out Html
 ```
 
 ### Frontend
 
 ```bash
-cd frontend-new
+cd frontend
 # 1. Escreva um teste que falhe para um componente ou hook
 # 2. Implemente a funcionalidade
-# 3. Execute os testes
-npm test
+# 3. Execute os testes (monorepo)
+pnpm test
 ```
 
 ## 📚 Documentação
