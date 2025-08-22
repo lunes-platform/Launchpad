@@ -1,0 +1,219 @@
+{
+  "navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "launchpool": "Launchpool",
+    "vip": "VIP",
+    "settings": "Settings",
+    "dashboard": "Dashboard",
+    "portfolio": "Portfolio",
+    "rewards": "Rewards",
+    "partners": "Partners",
+    "howItWorks": "How It Works",
+    "airdrop": "Airdrop",
+    "admin": "Admin"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "wallet": "Wallet",
+    "balance": "Balance",
+    "amount": "Amount",
+    "total": "Total",
+    "available": "Available",
+    "pending": "Pending",
+    "completed": "Completed",
+    "failed": "Failed",
+    "active": "Active",
+    "inactive": "Inactive",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "profile": "Profile",
+    "account": "Account",
+    "welcome": "Welcome",
+    "welcomeBack": "Welcome back",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "connectWallet": "Connect Wallet",
+    "walletConnected": "Wallet Connected",
+    "walletDisconnected": "Wallet Disconnected"
+  },
+  "vip": {
+    "title": "VIP Dashboard",
+    "subtitle": "Welcome, User {{name}}!",
+    "description": "Access your exclusive benefits. Here you have access to unique tools and opportunities to maximize your investment potential.",
+    "features": {
+      "analytics": {
+        "title": "Advanced Analytics",
+        "description": "View detailed analytics on projects, investments and market trends."
+      },
+      "earlyAccess": {
+        "title": "Early Access",
+        "description": "Access detailed information about projects before public launch."
+      },
+      "exclusiveReports": {
+        "title": "Exclusive Reports",
+        "description": "Receive specialized analysis and exclusive reports for better decisions."
+      },
+      "prioritySupport": {
+        "title": "Priority Support",
+        "description": "Participate in our private group with priority support."
+      },
+      "specialBenefits": {
+        "title": "Special Benefits",
+        "description": "Enjoy exclusive benefits and rewards for VIP members."
+      },
+      "advancedTools": {
+        "title": "Advanced Tools",
+        "description": "Personalize your profitability and investment strategies."
+      }
+    },
+    "quickSummary": "Quick Summary",
+    "period": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "90d": "90 days"
+    },
+    "access": "Access"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Discover and invest in innovative projects",
+    "searchPlaceholder": "Search projects...",
+    "noProjects": "No projects found",
+    "loadMore": "Load More",
+    "categories": {
+      "all": "All",
+      "defi": "DeFi",
+      "nft": "NFT",
+      "gaming": "Gaming",
+      "infrastructure": "Infrastructure"
+    },
+    "status": {
+      "upcoming": "Upcoming",
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "invest": "Invest",
+    "viewDetails": "View Details"
+  },
+  "launchpool": {
+    "title": "Launchpool",
+    "subtitle": "Stake and earn rewards from new projects",
+    "totalValueLocked": "Total Value Locked",
+    "totalRewards": "Total Rewards",
+    "activePools": "Active Pools",
+    "stake": "Stake",
+    "unstake": "Unstake",
+    "claim": "Claim",
+    "apy": "APY",
+    "yourStake": "Your Stake",
+    "pendingRewards": "Pending Rewards"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your preferences and account settings",
+    "language": {
+      "title": "Language",
+      "description": "Choose your preferred language",
+      "current": "Current language",
+      "select": "Select language"
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "Choose between light and dark mode",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage your notification preferences",
+      "email": "Email notifications",
+      "push": "Push notifications",
+      "sms": "SMS notifications"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "Manage your privacy settings"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Manage your security settings"
+    },
+    "saved": "Settings saved successfully",
+    "error": "Error saving settings"
+  },
+  "footer": {
+    "description": "The most advanced launchpad on the Lunes Network. Discover, invest and participate in the future of decentralized finance.",
+    "quickLinks": "Quick Links",
+    "resources": "Resources",
+    "community": "Community",
+    "legal": "Legal",
+    "contact": "Contact",
+    "support": "Support",
+    "documentation": "Documentation",
+    "blog": "Blog",
+    "whitepaper": "Whitepaper",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "allRightsReserved": "All rights reserved"
+  },
+  "errors": {
+    "generic": "An unexpected error occurred",
+    "network": "Network connection error",
+    "wallet": "Wallet connection error",
+    "transaction": "Transaction error",
+    "validation": "Validation error",
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden"
+  },
+  "error": {
+    "generic": "An error occurred. Please try again.",
+    "network": "Network error. Check your connection.",
+    "unauthorized": "You are not authorized to access this resource."
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account security and preferences.",
+    "language": {
+      "title": "Language",
+      "current": "Current Language",
+      "description": "Choose your preferred language for the interface."
+    },
+    "security": {
+      "title": "Account Security"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "email": "Email Notifications",
+      "description": "Receive updates about your account and projects."
+    }
+  }
+}

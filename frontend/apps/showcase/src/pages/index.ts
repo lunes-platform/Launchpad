@@ -1,0 +1,17 @@
+export { default as HomePage } from "./HomePage";
+export { default as ProjectsPage } from "./ProjectsPage";
+export { default as ProjectDetailPage } from "./ProjectDetailPage";
+export { default as DashboardPage } from "./DashboardPage";
+export { default as ProfilePage } from "./profile/ProfilePage";
+export { default as ProfileDetailsPage } from "./profile/ProfileDetailsPage";
+export { default as SettingsPage } from "./settings/SettingsPage";
+export { default as NotificationsPage } from "./notifications/NotificationsPage";
+export { default as WalletPage } from "./wallet/WalletPage";
+export { default as VipPage } from "./vip/VipPage";
+export { default as VipReportsPage } from "./vip/VipReportsPage";
+export { default as UpgradeVipPage } from "./vip/UpgradeVipPage";
+export { default as LoginPage } from "./auth/LoginPage";
+export { default as KYCPage } from "./auth/KYCPage";
+export { default as InvestorRankingPage } from "./InvestorRankingPage";
+export { default as RewardsSchedulePage } from "./RewardsSchedulePage";
+export { default as StakingPage } from "./StakingPage";

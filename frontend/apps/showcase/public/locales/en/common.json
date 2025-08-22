@@ -1,0 +1,79 @@
+{
+  "navigation": {
+    "vip": "VIP",
+    "projects": "Projects",
+    "launchpool": "Launchpool",
+    "settings": "Settings"
+  },
+  "vip": {
+    "title": "VIP Dashboard",
+    "subtitle": "Welcome, User 694vip!",
+    "description": "Enjoy your exclusive benefits. Here you have access to unique tools and opportunities to maximize your investment potential.",
+    "features": {
+      "analytics": {
+        "title": "Advanced Analytics",
+        "description": "View analytics on products, investments and market trends.",
+        "button": "Access"
+      },
+      "statistics": {
+        "title": "Access detailed statistics about your investments and portfolio.",
+        "description": "Detailed investment statistics",
+        "button": "Access"
+      },
+      "security": {
+        "title": "Protect your account with our security tools and monitoring systems.",
+        "description": "Advanced security tools",
+        "button": "Access"
+      },
+      "support": {
+        "title": "Connect with our priority support team for personalized assistance.",
+        "description": "Priority support",
+        "button": "Access"
+      },
+      "rewards": {
+        "title": "Enjoy VIP rewards and exclusive benefits for premium members.",
+        "description": "VIP rewards and benefits",
+        "button": "Access"
+      },
+      "settings": {
+        "title": "Customize your preferences and manage your account settings.",
+        "description": "Personalized settings",
+        "button": "Access"
+      }
+    },
+    "quickSummary": "Quick Summary"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account preferences and configurations",
+    "language": {
+      "title": "Language",
+      "description": "Select your preferred language for the interface",
+      "current": "Current: {{language}}",
+      "loading": "Changing language..."
+    },
+    "security": {
+      "title": "Security",
+      "description": "Manage your security settings and two-factor authentication"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Configure your notification preferences"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español",
+    "pt": "Português"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  }
+}

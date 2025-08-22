@@ -1,0 +1,197 @@
+{
+  "navigation": {
+    "home": "Início",
+    "projects": "Projetos",
+    "launchpool": "Launchpool",
+    "vip": "VIP",
+    "settings": "Configurações",
+    "dashboard": "Painel",
+    "portfolio": "Portfólio",
+    "rewards": "Recompensas",
+    "partners": "Parceiros",
+    "howItWorks": "Como Funciona",
+    "airdrop": "Airdrop",
+    "admin": "Admin"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "view": "Visualizar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "refresh": "Atualizar",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "wallet": "Carteira",
+    "balance": "Saldo",
+    "amount": "Quantidade",
+    "total": "Total",
+    "available": "Disponível",
+    "pending": "Pendente",
+    "completed": "Concluído",
+    "failed": "Falhou",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "enabled": "Habilitado",
+    "disabled": "Desabilitado"
+  },
+  "auth": {
+    "login": "Entrar",
+    "logout": "Sair",
+    "register": "Registrar",
+    "profile": "Perfil",
+    "account": "Conta",
+    "welcome": "Bem-vindo",
+    "welcomeBack": "Bem-vindo de volta",
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "connectWallet": "Conectar Carteira",
+    "walletConnected": "Carteira Conectada",
+    "walletDisconnected": "Carteira Desconectada"
+  },
+  "vip": {
+    "title": "Painel VIP",
+    "subtitle": "Bem-vindo, Usuário {{name}}!",
+    "description": "Acesse seus benefícios exclusivos. Aqui você tem acesso a ferramentas únicas e oportunidades para maximizar seu potencial de investimento.",
+    "features": {
+      "analytics": {
+        "title": "Análise Avançada",
+        "description": "Veja análises detalhadas sobre projetos, investimentos e tendências do mercado."
+      },
+      "earlyAccess": {
+        "title": "Acesso Antecipado",
+        "description": "Acesse informações detalhadas sobre projetos antes do lançamento público."
+      },
+      "exclusiveReports": {
+        "title": "Relatórios Exclusivos",
+        "description": "Receba análises especializadas e relatórios exclusivos para melhores decisões."
+      },
+      "prioritySupport": {
+        "title": "Suporte Prioritário",
+        "description": "Participe do nosso grupo privado com suporte prioritário."
+      },
+      "specialBenefits": {
+        "title": "Benefícios Especiais",
+        "description": "Desfrute de benefícios exclusivos e recompensas para membros VIP."
+      },
+      "advancedTools": {
+        "title": "Ferramentas Avançadas",
+        "description": "Personalize sua rentabilidade e estratégias de investimento."
+      }
+    },
+    "quickSummary": "Resumo Rápido",
+    "period": {
+      "7d": "7 dias",
+      "30d": "30 dias",
+      "90d": "90 dias"
+    },
+    "access": "Acessar"
+  },
+  "projects": {
+    "title": "Projetos",
+    "subtitle": "Descubra e invista em projetos inovadores",
+    "searchPlaceholder": "Buscar projetos...",
+    "noProjects": "Nenhum projeto encontrado",
+    "loadMore": "Carregar Mais",
+    "categories": {
+      "all": "Todos",
+      "defi": "DeFi",
+      "nft": "NFT",
+      "gaming": "Gaming",
+      "infrastructure": "Infraestrutura"
+    },
+    "status": {
+      "upcoming": "Em Breve",
+      "active": "Ativo",
+      "completed": "Concluído",
+      "cancelled": "Cancelado"
+    },
+    "invest": "Investir",
+    "viewDetails": "Ver Detalhes"
+  },
+  "launchpool": {
+    "title": "Launchpool",
+    "subtitle": "Faça staking e ganhe recompensas de novos projetos",
+    "totalValueLocked": "Valor Total Bloqueado",
+    "totalRewards": "Recompensas Totais",
+    "activePools": "Pools Ativos",
+    "stake": "Fazer Staking",
+    "unstake": "Retirar Staking",
+    "claim": "Reivindicar",
+    "apy": "APY",
+    "yourStake": "Seu Staking",
+    "pendingRewards": "Recompensas Pendentes"
+  },
+  "settings": {
+    "title": "Configurações",
+    "subtitle": "Gerencie suas preferências e configurações da conta",
+    "language": {
+      "title": "Idioma",
+      "description": "Escolha seu idioma preferido",
+      "current": "Idioma atual",
+      "select": "Selecionar idioma"
+    },
+    "theme": {
+      "title": "Tema",
+      "description": "Escolha entre modo claro e escuro",
+      "light": "Claro",
+      "dark": "Escuro",
+      "system": "Sistema"
+    },
+    "notifications": {
+      "title": "Notificações",
+      "description": "Gerencie suas preferências de notificação",
+      "email": "Notificações por email",
+      "push": "Notificações push",
+      "sms": "Notificações SMS"
+    },
+    "privacy": {
+      "title": "Privacidade",
+      "description": "Gerencie suas configurações de privacidade"
+    },
+    "security": {
+      "title": "Segurança",
+      "description": "Gerencie suas configurações de segurança"
+    },
+    "saved": "Configurações salvas com sucesso",
+    "error": "Erro ao salvar configurações"
+  },
+  "footer": {
+    "description": "A plataforma de lançamento mais avançada na Rede Lunes. Descubra, invista e participe no futuro das finanças descentralizadas.",
+    "quickLinks": "Links Rápidos",
+    "resources": "Recursos",
+    "community": "Comunidade",
+    "legal": "Legal",
+    "contact": "Contato",
+    "support": "Suporte",
+    "documentation": "Documentação",
+    "blog": "Blog",
+    "whitepaper": "Whitepaper",
+    "termsOfService": "Termos de Serviço",
+    "privacyPolicy": "Política de Privacidade",
+    "allRightsReserved": "Todos os direitos reservados"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro inesperado",
+    "network": "Erro de conexão de rede",
+    "wallet": "Erro de conexão da carteira",
+    "transaction": "Erro de transação",
+    "validation": "Erro de validação",
+    "notFound": "Página não encontrada",
+    "unauthorized": "Acesso não autorizado",
+    "forbidden": "Acesso proibido"
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "projects": "Proyectos",
+    "launchpool": "Launchpool",
+    "vip": "VIP",
+    "settings": "Configuración",
+    "dashboard": "Panel",
+    "portfolio": "Portafolio",
+    "rewards": "Recompensas",
+    "partners": "Socios",
+    "howItWorks": "Cómo Funciona",
+    "airdrop": "Airdrop",
+    "admin": "Admin"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "refresh": "Actualizar",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "wallet": "Billetera",
+    "balance": "Balance",
+    "amount": "Cantidad",
+    "total": "Total",
+    "available": "Disponible",
+    "pending": "Pendiente",
+    "completed": "Completado",
+    "failed": "Fallido",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "enabled": "Habilitado",
+    "disabled": "Deshabilitado"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "register": "Registrarse",
+    "profile": "Perfil",
+    "account": "Cuenta",
+    "welcome": "Bienvenido",
+    "welcomeBack": "Bienvenido de vuelta",
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "connectWallet": "Conectar Billetera",
+    "walletConnected": "Billetera Conectada",
+    "walletDisconnected": "Billetera Desconectada"
+  },
+  "vip": {
+    "title": "Panel VIP",
+    "subtitle": "¡Bienvenido, Usuario {{name}}!",
+    "description": "Accede a tus beneficios exclusivos. Aquí tienes acceso a herramientas únicas y oportunidades para maximizar tu potencial de inversión.",
+    "features": {
+      "analytics": {
+        "title": "Análisis Avanzado",
+        "description": "Ve análisis detallados sobre proyectos, inversiones y tendencias del mercado."
+      },
+      "earlyAccess": {
+        "title": "Acceso Temprano",
+        "description": "Accede a información detallada sobre proyectos antes del lanzamiento público."
+      },
+      "exclusiveReports": {
+        "title": "Reportes Exclusivos",
+        "description": "Recibe análisis especializados y reportes exclusivos para mejores decisiones."
+      },
+      "prioritySupport": {
+        "title": "Soporte Prioritario",
+        "description": "Participa en nuestro grupo privado con soporte prioritario."
+      },
+      "specialBenefits": {
+        "title": "Beneficios Especiales",
+        "description": "Disfruta de beneficios exclusivos y recompensas para miembros VIP."
+      },
+      "advancedTools": {
+        "title": "Herramientas Avanzadas",
+        "description": "Personaliza tu rentabilidad y estrategias de inversión."
+      }
+    },
+    "quickSummary": "Resumen Rápido",
+    "period": {
+      "7d": "7 días",
+      "30d": "30 días",
+      "90d": "90 días"
+    },
+    "access": "Acceder"
+  },
+  "projects": {
+    "title": "Proyectos",
+    "subtitle": "Descubre e invierte en proyectos innovadores",
+    "searchPlaceholder": "Buscar proyectos...",
+    "noProjects": "No se encontraron proyectos",
+    "loadMore": "Cargar Más",
+    "categories": {
+      "all": "Todos",
+      "defi": "DeFi",
+      "nft": "NFT",
+      "gaming": "Gaming",
+      "infrastructure": "Infraestructura"
+    },
+    "status": {
+      "upcoming": "Próximo",
+      "active": "Activo",
+      "completed": "Completado",
+      "cancelled": "Cancelado"
+    },
+    "invest": "Invertir",
+    "viewDetails": "Ver Detalles"
+  },
+  "launchpool": {
+    "title": "Launchpool",
+    "subtitle": "Haz staking y gana recompensas de nuevos proyectos",
+    "totalValueLocked": "Valor Total Bloqueado",
+    "totalRewards": "Recompensas Totales",
+    "activePools": "Pools Activos",
+    "stake": "Hacer Staking",
+    "unstake": "Retirar Staking",
+    "claim": "Reclamar",
+    "apy": "APY",
+    "yourStake": "Tu Staking",
+    "pendingRewards": "Recompensas Pendientes"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tus preferencias y configuración de cuenta",
+    "language": {
+      "title": "Idioma",
+      "description": "Elige tu idioma preferido",
+      "current": "Idioma actual",
+      "select": "Seleccionar idioma"
+    },
+    "theme": {
+      "title": "Tema",
+      "description": "Elige entre modo claro y oscuro",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "description": "Gestiona tus preferencias de notificación",
+      "email": "Notificaciones por email",
+      "push": "Notificaciones push",
+      "sms": "Notificaciones SMS"
+    },
+    "privacy": {
+      "title": "Privacidad",
+      "description": "Gestiona tu configuración de privacidad"
+    },
+    "security": {
+      "title": "Seguridad",
+      "description": "Gestiona tu configuración de seguridad"
+    },
+    "saved": "Configuración guardada exitosamente",
+    "error": "Error al guardar la configuración"
+  },
+  "footer": {
+    "description": "La plataforma de lanzamiento más avanzada en la Red Lunes. Descubre, invierte y participa en el futuro de las finanzas descentralizadas.",
+    "quickLinks": "Enlaces Rápidos",
+    "resources": "Recursos",
+    "community": "Comunidad",
+    "legal": "Legal",
+    "contact": "Contacto",
+    "support": "Soporte",
+    "documentation": "Documentación",
+    "blog": "Blog",
+    "whitepaper": "Whitepaper",
+    "termsOfService": "Términos de Servicio",
+    "privacyPolicy": "Política de Privacidad",
+    "allRightsReserved": "Todos los derechos reservados"
+  },
+  "errors": {
+    "generic": "Ocurrió un error inesperado",
+    "network": "Error de conexión de red",
+    "wallet": "Error de conexión de billetera",
+    "transaction": "Error de transacción",
+    "validation": "Error de validación",
+    "notFound": "Página no encontrada",
+    "unauthorized": "Acceso no autorizado",
+    "forbidden": "Acceso prohibido"
+  },
+  "error": {
+    "generic": "Ocurrió un error. Por favor, inténtalo de nuevo.",
+    "network": "Error de red. Verifica tu conexión.",
+    "unauthorized": "No tienes autorización para acceder a este recurso."
+  },
+  "settings": {
+    "title": "Configuraciones",
+    "subtitle": "Gestiona la seguridad y las preferencias de tu cuenta.",
+    "language": {
+      "title": "Idioma",
+      "current": "Idioma Actual",
+      "description": "Elige tu idioma preferido para la interfaz."
+    },
+    "security": {
+      "title": "Seguridad de la Cuenta"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "email": "Notificaciones por Email",
+      "description": "Recibe actualizaciones sobre tu cuenta y proyectos."
+    }
+  }
+}

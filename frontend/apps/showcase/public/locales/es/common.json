@@ -1,0 +1,79 @@
+{
+  "navigation": {
+    "vip": "VIP",
+    "projects": "Proyectos",
+    "launchpool": "Launchpool",
+    "settings": "Configuración"
+  },
+  "vip": {
+    "title": "Dashboard VIP",
+    "subtitle": "¡Bienvenido, Usuario 694vip!",
+    "description": "Disfruta de tus beneficios exclusivos. Aquí tienes acceso a herramientas y oportunidades únicas para maximizar tu potencial de inversión.",
+    "features": {
+      "analytics": {
+        "title": "Análisis Avanzado",
+        "description": "Ver análisis de productos, inversiones y tendencias del mercado.",
+        "button": "Acceder"
+      },
+      "statistics": {
+        "title": "Accede a estadísticas detalladas sobre tus inversiones y cartera.",
+        "description": "Estadísticas detalladas de inversión",
+        "button": "Acceder"
+      },
+      "security": {
+        "title": "Protege tu cuenta con nuestras herramientas de seguridad y sistemas de monitoreo.",
+        "description": "Herramientas de seguridad avanzadas",
+        "button": "Acceder"
+      },
+      "support": {
+        "title": "Conéctate con nuestro equipo de soporte prioritario para asistencia personalizada.",
+        "description": "Soporte prioritario",
+        "button": "Acceder"
+      },
+      "rewards": {
+        "title": "Disfruta de recompensas VIP y beneficios exclusivos para miembros premium.",
+        "description": "Recompensas y beneficios VIP",
+        "button": "Acceder"
+      },
+      "settings": {
+        "title": "Personaliza tus preferencias y gestiona la configuración de tu cuenta.",
+        "description": "Configuración personalizada",
+        "button": "Acceder"
+      }
+    },
+    "quickSummary": "Resumen Rápido"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona las preferencias y configuraciones de tu cuenta",
+    "language": {
+      "title": "Idioma",
+      "description": "Selecciona tu idioma preferido para la interfaz",
+      "current": "Actual: {{language}}",
+      "loading": "Cambiando idioma..."
+    },
+    "security": {
+      "title": "Seguridad",
+      "description": "Gestiona tu configuración de seguridad y autenticación de dos factores"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "description": "Configura tus preferencias de notificación"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español",
+    "pt": "Português"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar"
+  }
+}
