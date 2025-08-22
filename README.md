@@ -15,6 +15,42 @@ Uma plataforma de lançamento de projetos (launchpad) totalmente on-chain, const
 
 O Launchpad Lunes elimina a necessidade de um backend centralizado, operando exclusivamente com um conjunto de smart contracts robustos e um frontend reativo. Isso garante máxima segurança, transparência e resistência à censura.
 
+## 🌉 Bridge System USDT → LUSDT
+
+O projeto inclui um sistema de bridge completo para transferência de tokens entre Solana e Lunes Network:
+
+- **Depósito USDT (Solana) → Recebimento LUSDT (Lunes)**
+- **Queima LUSDT (Lunes) → Recebimento USDT (Solana)**
+- **Portal de Transparência** com histórico completo de transações
+- **Contratos de Custódia** seguros para USDT e LUSDT
+- **Sistema de Taxas** configurável
+- **Limites de Segurança** (mínimo, máximo, diário)
+
+### 🏛️ Portal de Transparência
+
+Acesse o portal de transparência em `/bridge` para visualizar:
+
+- **Estatísticas do Sistema**: Total depositado, emitido, queimado, circulando
+- **Saldos de Custódia**: USDT e LUSDT em contratos seguros
+- **Histórico de Transações**: Todas as operações com filtros e busca
+- **Formulários de Operação**: Depósito e retirada com interface elegante
+- **Métricas de Segurança**: Configurações de limite e taxas
+
+### 🚀 Acesso ao Bridge
+
+```bash
+# 1. Inicie o frontend
+cd frontend
+pnpm dev:showcase
+
+# 2. Acesse o portal de transparência
+# http://localhost:5173/bridge
+```
+
+Para mais detalhes sobre o Bridge System, consulte:
+- **[Documentação do Bridge](smart-contracts/docs/BRIDGE_SYSTEM_README.md)**
+- **[Smart Contract do Bridge](smart-contracts/contracts/launchpad/src/bridge_system.rs)**
+
 ## 🏗️ Arquitetura Simplificada
 
 A nova arquitetura é limpa e direta, promovendo a descentralização:
@@ -23,6 +59,7 @@ A nova arquitetura é limpa e direta, promovendo a descentralização:
 ┌─────────────────┐      ┌─────────────────┐
 │   Frontend      │──────│ Smart Contracts │
 │ (React + Vite)  │      │   (ink! 5.x)    │
+│  + Bridge UI    │      │  + Bridge Sys   │
 └─────────────────┘      └─────────────────┘
          │                       │
          ▼                       ▼

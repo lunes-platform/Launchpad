@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  * {
+    @apply border-grafite-200;
+  }
+  
+  body {
+    @apply bg-white text-grafite-900;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Componentes base reutilizáveis */
+  .btn-base {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-roxo-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-white;
+  }
+  
+  .input-base {
+    @apply flex h-10 w-full rounded-md border border-grafite-300 bg-transparent px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-grafite-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-roxo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  
+  .card-base {
+    @apply rounded-lg border border-grafite-200 bg-white text-grafite-900 shadow-sm;
+  }
+}
+
+@layer utilities {
+  /* Utilitários customizados */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .animate-in {
+    animation-duration: 0.2s;
+    animation-fill-mode: both;
+  }
+  
+  .animate-out {
+    animation-duration: 0.2s;
+    animation-fill-mode: both;
+  }
+  
+  .fade-in {
+    animation-name: fadeIn;
+  }
+  
+  .fade-out {
+    animation-name: fadeOut;
+  }
+  
+  .zoom-in {
+    animation-name: zoomIn;
+  }
+  
+  .zoom-out {
+    animation-name: zoomOut;
+  }
+  
+  .slide-in-from-top {
+    animation-name: slideInFromTop;
+  }
+  
+  .slide-in-from-bottom {
+    animation-name: slideInFromBottom;
+  }
+  
+  .slide-in-from-left {
+    animation-name: slideInFromLeft;
+  }
+  
+  .slide-in-from-right {
+    animation-name: slideInFromRight;
+  }
+}
+
+/* Keyframes para animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

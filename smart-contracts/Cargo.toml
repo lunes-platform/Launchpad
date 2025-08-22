@@ -2,6 +2,7 @@
 members = [
     "contracts/launchpad",
     "contracts/phases_demo",
+    "contracts/reward_system",
     # Adicione futuros contratos ou crates aqui.
     # Ex: "contracts/outro_contrato",
     #     "crates/shared_logic",

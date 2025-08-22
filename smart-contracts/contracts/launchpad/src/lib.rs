@@ -7,7 +7,7 @@
 pub mod complete_launchpad;
 pub mod launchpool_system;
 pub mod raffle_system;
-
+pub mod bridge_system;
 // Módulos de exemplo e demonstração (simplificado)
 pub mod phases_demo;
 

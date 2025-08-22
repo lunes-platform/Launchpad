@@ -1,0 +1,239 @@
+# Product Requirements Document (PRD)
+# Sistema de Papéis de Usuários - Frontend Launchpad Lunes
+
+## 1. VISÃO GERAL DO PRODUTO
+
+### 1.1 Objetivo
+Implementar um sistema completo de papéis de usuários no frontend do Launchpad Lunes, baseado na análise abrangente dos 7 tipos de usuários identificados. O sistema deve fornecer interfaces específicas, permissões granulares e experiências personalizadas para cada papel.
+
+### 1.2 Problema a Resolver
+Atualmente, o frontend possui uma implementação básica de papéis, mas não oferece:
+- Interfaces específicas otimizadas para cada tipo de usuário
+- Sistema de permissões granular e seguro
+- Dashboards personalizados baseados no papel
+- Fluxos de usuário otimizados para cada perfil
+- Validações de segurança robustas
+
+### 1.3 Solução Proposta
+Desenvolver um sistema completo de papéis com:
+- 7 tipos de usuários distintos com interfaces específicas
+- Sistema de autenticação e autorização robusto
+- Dashboards personalizados para cada papel
+- Componentes reutilizáveis e seguros
+- Arquitetura escalável baseada em monorepo
+
+## 2. PAPÉIS DE USUÁRIOS IDENTIFICADOS
+
+### 2.1 ADMINISTRADOR (ADMIN)
+**Responsabilidades:** Controle total do sistema
+**Permissões:** 25+ funções administrativas
+**Interface:** Painel completo com 6 seções principais
+- Gestão de projetos e fases
+- Gestão de usuários e KYC
+- Configurações do sistema
+- Gestão de recompensas
+- Analytics avançadas
+- Auditoria e segurança
+
+### 2.2 PROJETO/EMISSOR (PROJECT_ISSUER)
+**Responsabilidades:** Criação e gestão de projetos
+**Interface:** Dashboard focado em captação
+- Submissão de projetos
+- Acompanhamento de métricas
+- Gestão de investidores
+- Analytics de performance
+- Configuração de fases
+
+### 2.3 INVESTIDOR VIP (INVESTOR_VIP)
+**Benefícios:** Privilégios especiais e acesso prioritário
+**Interface:** Painel premium com analytics avançadas
+- Limites aumentados
+- Taxas reduzidas
+- Acesso prioritário
+- Funcionalidades exclusivas
+- Suporte dedicado
+
+### 2.4 INVESTIDOR VERIFICADO (INVESTOR_VERIFIED)
+**Status:** Identidade confirmada via KYC
+**Acesso:** Todas as fases, incluindo KYC obrigatório
+- Limites maiores
+- Projetos premium
+- Compliance regulatório
+- Funcionalidades completas
+
+### 2.5 INVESTIDOR PADRÃO (INVESTOR_STANDARD)
+**Perfil:** Usuário comum da plataforma
+**Interface:** Dashboard completo com 7 seções
+- Investimentos básicos
+- Staking de tokens
+- Participação em rifas
+- Claims de recompensas
+- Portfólio pessoal
+
+### 2.6 USUÁRIO BANIDO (USER_BANNED)
+**Restrições:** Acesso limitado por violações
+**Permitido:** Apenas claims de tokens já adquiridos
+- Interface restrita
+- Informações de recurso
+- Histórico limitado
+
+### 2.7 ORÁCULO DE PREÇOS (PRICE_ORACLE)
+**Função:** Sistema automatizado
+**Acesso:** Função específica de atualização
+- Interface técnica
+- Logs de operações
+- Monitoramento de status
+
+## 3. FUNCIONALIDADES PRINCIPAIS
+
+### 3.1 Sistema de Autenticação
+- Integração com carteiras Web3
+- Determinação automática de papéis
+- Validação de KYC em tempo real
+- Gestão de sessões seguras
+
+### 3.2 Dashboards Personalizados
+- Interface específica para cada papel
+- Métricas relevantes por usuário
+- Navegação contextual
+- Widgets personalizáveis
+
+### 3.3 Sistema de Permissões
+- Validações granulares
+- Guards de rota e componente
+- Verificações em tempo real
+- Fallbacks seguros
+
+### 3.4 Componentes Reutilizáveis
+- Biblioteca de UI consistente
+- Componentes específicos por papel
+- Animações e microinterações
+- Responsividade completa
+
+## 4. REQUISITOS TÉCNICOS
+
+### 4.1 Arquitetura
+- Monorepo com Turborepo
+- React 18+ com TypeScript
+- Vite para build e desenvolvimento
+- TailwindCSS para estilização
+
+### 4.2 Segurança
+- Validações client-side e server-side
+- Sanitização de inputs
+- Auditoria de ações
+- Proteção contra ataques comuns
+
+### 4.3 Performance
+- Code splitting por papel
+- Lazy loading de componentes
+- Otimização de bundle
+- Cache inteligente
+
+### 4.4 Testes
+- Cobertura de 90%+ com Vitest
+- Testes unitários e integração
+- Testes E2E com Playwright
+- TDD (Test-Driven Development)
+
+## 5. CRITÉRIOS DE ACEITAÇÃO
+
+### 5.1 Funcionalidade
+- [ ] Todos os 7 papéis implementados
+- [ ] Dashboards específicos funcionais
+- [ ] Sistema de permissões robusto
+- [ ] Navegação contextual
+- [ ] Validações de segurança
+
+### 5.2 Qualidade
+- [ ] Cobertura de testes ≥ 90%
+- [ ] Performance Lighthouse ≥ 90
+- [ ] Acessibilidade WCAG 2.1 AA
+- [ ] Responsividade completa
+- [ ] Compatibilidade cross-browser
+
+### 5.3 Segurança
+- [ ] Validações de entrada
+- [ ] Proteção de rotas
+- [ ] Auditoria de ações
+- [ ] Tratamento de erros
+- [ ] Logs de segurança
+
+## 6. CRONOGRAMA E PRIORIDADES
+
+### Fase 1: Fundação (Semana 1-2)
+- Refatoração do sistema de tipos
+- Implementação do AuthContext melhorado
+- Criação dos guards de segurança
+- Setup de testes
+
+### Fase 2: Dashboards Core (Semana 3-4)
+- Dashboard do Administrador
+- Dashboard do Investidor (todos os tipos)
+- Dashboard do Projeto/Emissor
+- Navegação contextual
+
+### Fase 3: Funcionalidades Avançadas (Semana 5-6)
+- Componentes específicos por papel
+- Sistema de notificações
+- Analytics e métricas
+- Otimizações de performance
+
+### Fase 4: Polimento e Testes (Semana 7-8)
+- Testes E2E completos
+- Auditoria de segurança
+- Otimizações finais
+- Documentação
+
+## 7. MÉTRICAS DE SUCESSO
+
+### 7.1 Técnicas
+- Tempo de carregamento < 2s
+- Bundle size otimizado
+- Zero vulnerabilidades críticas
+- Cobertura de testes ≥ 90%
+
+### 7.2 Experiência do Usuário
+- Navegação intuitiva por papel
+- Interfaces responsivas
+- Feedback visual adequado
+- Acessibilidade completa
+
+### 7.3 Segurança
+- Validações robustas
+- Auditoria completa
+- Proteção de dados
+- Compliance regulatório
+
+## 8. RISCOS E MITIGAÇÕES
+
+### 8.1 Riscos Técnicos
+- **Complexidade de permissões:** Implementar sistema granular gradualmente
+- **Performance:** Usar code splitting e lazy loading
+- **Compatibilidade:** Testes extensivos em diferentes browsers
+
+### 8.2 Riscos de Segurança
+- **Vazamento de dados:** Validações duplas e auditoria
+- **Escalação de privilégios:** Guards robustos e verificações
+- **Ataques XSS/CSRF:** Sanitização e proteções padrão
+
+### 8.3 Riscos de Prazo
+- **Escopo amplo:** Priorização clara e entregas incrementais
+- **Dependências:** Identificação precoce e planos alternativos
+- **Qualidade:** TDD e revisões contínuas
+
+## 9. DEFINIÇÃO DE PRONTO
+
+Uma funcionalidade está pronta quando:
+- [ ] Implementação completa conforme especificação
+- [ ] Testes unitários e integração passando
+- [ ] Revisão de código aprovada
+- [ ] Documentação atualizada
+- [ ] Validação de segurança realizada
+- [ ] Teste manual em diferentes papéis
+- [ ] Performance validada
+- [ ] Acessibilidade verificada
+
+## 10. CONCLUSÃO
+
+Este PRD define um sistema robusto e escalável de papéis de usuários para o Launchpad Lunes. A implementação seguirá as melhores práticas de desenvolvimento, priorizando segurança, performance e experiência do usuário. O resultado será uma plataforma que oferece experiências personalizadas e seguras para cada tipo de usuário, mantendo a flexibilidade para futuras expansões.
