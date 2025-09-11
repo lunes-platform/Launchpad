@@ -32,6 +32,9 @@ pnpm-debug.log*
 target/
 **/target/
 
+# Documentation (local only)
+docs/
+
 # Artifacts & misc
 *.tmp
 *.swp
