@@ -24,6 +24,9 @@ node_modules/
 # OS specific
 .DS_Store
 
+# Turbo cache
+.turbo/
+
 # Task files
 # tasks.json
 # tasks/ 
