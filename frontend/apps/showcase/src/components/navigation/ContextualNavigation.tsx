@@ -22,6 +22,8 @@ import {
   FolderOpen,
   Coins,
   Vote,
+  MessageSquare,
+  UserPlus,
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -81,6 +83,20 @@ const HEADER_NAVIGATION_ITEMS: NavigationItem[] = [
     href: "/projetos",
     icon: FolderOpen,
     description: "Listagem e acesso a projetos",
+    roles: [
+      UserRole.ADMIN,
+      UserRole.PROJECT_ISSUER,
+      UserRole.INVESTOR_VIP,
+      UserRole.INVESTOR_VERIFIED,
+      UserRole.INVESTOR_STANDARD,
+      UserRole.PRICE_ORACLE,
+    ],
+  },
+  {
+    name: "AMAs",
+    href: "/ama-publications",
+    icon: MessageSquare,
+    description: "Publicações e sessões de AMA",
     roles: [
       UserRole.ADMIN,
       UserRole.PROJECT_ISSUER,
@@ -316,6 +332,26 @@ const SIDEBAR_NAVIGATION_ITEMS: NavigationItem[] = [
       UserRole.INVESTOR_VIP,
       UserRole.INVESTOR_VERIFIED,
       UserRole.INVESTOR_STANDARD,
+    ],
+  },
+  {
+    name: "Agendar AMA",
+    href: "/schedule-ama",
+    icon: Calendar,
+    description: "Agendar sessões de AMA para seu projeto",
+    roles: [
+      UserRole.ADMIN,
+      UserRole.PROJECT_ISSUER,
+    ],
+  },
+  {
+    name: "Contratar AMA",
+    href: "/hire-ama",
+    icon: UserPlus,
+    description: "Contratar especialistas para AMAs",
+    roles: [
+      UserRole.ADMIN,
+      UserRole.PROJECT_ISSUER,
     ],
   },
 

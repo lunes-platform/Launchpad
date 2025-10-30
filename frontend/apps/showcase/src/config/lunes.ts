@@ -101,7 +101,7 @@ export const LUNES_WALLET_CONFIG = {
  */
 export const LUNES_API_CONFIG = {
   /** URL base da API do backend */
-  backendUrl: import.meta.env.VITE_LUNES_API_URL || "http://localhost:3001/api",
+  backendUrl: import.meta.env.VITE_LUNES_API_URL || "http://localhost:3001/api/v1",
 
   /** Endpoints específicos da Rede Lunes */
   endpoints: {

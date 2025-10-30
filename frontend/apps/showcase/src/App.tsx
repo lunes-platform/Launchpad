@@ -28,18 +28,22 @@ import {
   VipPage,
   VipReportsPage,
   UpgradeVipPage,
+  ReportPage,
   LoginPage,
   KYCPage,
   InvestorRankingPage,
   RewardsSchedulePage,
   StakingPage,
 } from "./pages";
+
 import HowItWorksPage from "./pages/HowItWorksPage";
 import { PartnersPage } from "./pages/PartnersPage";
 import { TripleAProjectsPage } from "./pages/TripleAProjectsPage";
 import { RaffleHistoryPage } from "./pages/RaffleHistoryPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import LaunchpoolPage from "./pages/LaunchpoolPage";
+import ContactPage from "./pages/ContactPage";
+import FAQPage from "./pages/FAQPage";
 
 import RafflesPage from "./pages/RafflesPage";
 import RaffleDetailsPage from "./pages/RaffleDetailsPage";
@@ -52,6 +56,10 @@ import CreateProjectPage from "./pages/CreateProjectPage";
 import EditProjectPage from "./pages/EditProjectPage";
 import GovernancePage from "./pages/GovernancePage";
 import DashboardStakingPage from "./pages/DashboardStakingPage";
+import ScheduleAMAPage from "./pages/ScheduleAMAPage";
+import HireAMAPage from "./pages/HireAMAPage";
+import AMAPublicationsPage from "./pages/AMAPublicationsPage";
+import AMAWatchPage from "./pages/AMAWatchPage";
 // Admin Pages
 import {
   AdminDashboard,
@@ -163,6 +171,14 @@ const router = createBrowserRouter([
         element: <GovernancePage />,
       },
       {
+        path: "ama-publications",
+        element: <AMAPublicationsPage />,
+      },
+      {
+        path: "ama/:id",
+        element: <AMAWatchPage />,
+      },
+      {
         path: "components",
         element: <ComponentsShowcase />,
       },
@@ -173,6 +189,18 @@ const router = createBrowserRouter([
       {
         path: "parceiros",
         element: <PartnersPage />,
+      },
+      {
+        path: "report",
+        element: <ReportPage />,
+      },
+      {
+        path: "contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "faq",
+        element: <FAQPage />,
       },
       {
         path: "projetos-3a",
@@ -219,6 +247,19 @@ const router = createBrowserRouter([
         ),
         children: [
           { path: "criar-projeto", element: <CreateProjectPage /> },
+        ],
+      },
+
+      // Rotas protegidas para AMAs (Project Issuers e Admins)
+      {
+        element: (
+          <ProtectedRoute 
+            allowedRoles={[UserRole.PROJECT_ISSUER, UserRole.ADMIN]} 
+          />
+        ),
+        children: [
+          { path: "agendar-ama", element: <ScheduleAMAPage /> },
+          { path: "contratar-ama", element: <HireAMAPage /> },
         ],
       },
 

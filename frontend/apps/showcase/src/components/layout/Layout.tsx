@@ -24,6 +24,9 @@ export function Layout({ children }: LayoutProps) {
     '/listar-projeto',
     '/criar-projeto',
     '/editar-projeto',
+    '/agendar-ama',
+    '/contratar-ama',
+    '/ama-publications',
     '/launchpool',
     '/raffles',
     '/raffle-history',
@@ -49,6 +52,13 @@ export function Layout({ children }: LayoutProps) {
     sidebarRoutes.some(route => location.pathname.startsWith(route)) ||
     (location.pathname === '/projetos' || location.pathname.match(/^\/projetos\/[^/]+$/))
   );
+  
+  // Debug: Log do estado da sidebar
+  console.log('🔍 Sidebar Debug:', { 
+    hasUser: !!user, 
+    currentPath: location.pathname, 
+    shouldShow: shouldShowSidebar 
+  });
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-grafite-900">

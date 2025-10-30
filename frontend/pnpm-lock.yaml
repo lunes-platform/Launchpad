@@ -27,8 +27,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       framer-motion:
-        specifier: ^12.23.12
-        version: 12.23.12(react-dom@19.1.1)(react@19.1.1)
+        specifier: ^12.23.22
+        version: 12.23.22(react-dom@19.1.1)(react@19.1.1)
       lucide-react:
         specifier: ^0.540.0
         version: 0.540.0(react@19.1.1)
@@ -125,7 +125,7 @@ importers:
         version: 5.85.3(@tanstack/react-query@5.85.3)(react@19.1.1)
       '@types/recharts':
         specifier: ^2.0.1
-        version: 2.0.1(@types/react@19.1.10)(react-dom@19.1.1)(react-is@18.3.1)(react@19.1.1)(redux@5.0.1)
+        version: 2.0.1(@types/react@19.1.10)(react-dom@19.1.1)(react-is@19.1.1)(react@19.1.1)(redux@5.0.1)
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
@@ -164,7 +164,7 @@ importers:
         version: 7.8.1(react-dom@19.1.1)(react@19.1.1)
       recharts:
         specifier: ^3.1.2
-        version: 3.1.2(@types/react@19.1.10)(react-dom@19.1.1)(react-is@18.3.1)(react@19.1.1)(redux@5.0.1)
+        version: 3.1.2(@types/react@19.1.10)(react-dom@19.1.1)(react-is@19.1.1)(react@19.1.1)(redux@5.0.1)
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.3.1
@@ -297,8 +297,8 @@ importers:
         specifier: ^2.0.0
         version: 2.1.1
       framer-motion:
-        specifier: ^10.16.16
-        version: 10.18.0(react-dom@18.3.1)(react@18.3.1)
+        specifier: ^12.23.12
+        version: 12.23.22(react-dom@18.3.1)(react@18.3.1)
       lucide-react:
         specifier: ^0.294.0
         version: 0.294.0(react@18.3.1)
@@ -494,6 +494,11 @@ packages:
     resolution: {integrity: sha512-9uIQ10o0WGdpP6GDhXcdOJPJuDgFtIDtN/9+ArJQ2NAfAmiuhTQdzkaTGR33v43GYS2UrSA0eX2pPPHoFVvpxA==}
     engines: {node: '>=6.9.0'}
 
+  /@babel/runtime@7.28.4:
+    resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
+    engines: {node: '>=6.9.0'}
+    dev: true
+
   /@babel/template@7.27.2:
     resolution: {integrity: sha512-LPDZ85aEJyYSd18/DkjNh4/y1ntkE5KwUHWTiqgRxruuZL2F1yuHligVHLvcHY2vMHXttKFpJn6LwfI7cw7ODw==}
     engines: {node: '>=6.9.0'}
@@ -565,20 +570,6 @@ packages:
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
     dev: true
-
-  /@emotion/is-prop-valid@0.8.8:
-    resolution: {integrity: sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==}
-    requiresBuild: true
-    dependencies:
-      '@emotion/memoize': 0.7.4
-    dev: false
-    optional: true
-
-  /@emotion/memoize@0.7.4:
-    resolution: {integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==}
-    requiresBuild: true
-    dev: false
-    optional: true
 
   /@esbuild/aix-ppc64@0.25.9:
     resolution: {integrity: sha512-OaGtL73Jck6pBKjNIe24BnFE6agGl+6KxDtTfHhy1HmhthfKouEcOhqpSL64K4/0WCtbKFLOdzD/44cJ4k9opA==}
@@ -2324,7 +2315,7 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       '@babel/code-frame': 7.27.1
-      '@babel/runtime': 7.28.3
+      '@babel/runtime': 7.28.4
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
@@ -2539,11 +2530,11 @@ packages:
     dependencies:
       csstype: 3.1.3
 
-  /@types/recharts@2.0.1(@types/react@19.1.10)(react-dom@19.1.1)(react-is@18.3.1)(react@19.1.1)(redux@5.0.1):
+  /@types/recharts@2.0.1(@types/react@19.1.10)(react-dom@19.1.1)(react-is@19.1.1)(react@19.1.1)(redux@5.0.1):
     resolution: {integrity: sha512-/cFs7oiafzByUwBSWA1IzE6FW+ppPwQAWsDTadSgVOwzveY9MESpyLHyyHY0SfPPKLW4+4qVNYHPXd0rFiC8vg==}
     deprecated: This is a stub types definition. recharts provides its own type definitions, so you do not need this installed.
     dependencies:
-      recharts: 3.1.2(@types/react@19.1.10)(react-dom@19.1.1)(react-is@18.3.1)(react@19.1.1)(redux@5.0.1)
+      recharts: 3.1.2(@types/react@19.1.10)(react-dom@19.1.1)(react-is@19.1.1)(react@19.1.1)(redux@5.0.1)
     transitivePeerDependencies:
       - '@types/react'
       - react
@@ -3594,24 +3585,6 @@ packages:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
     dev: true
 
-  /framer-motion@10.18.0(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-oGlDh1Q1XqYPksuTD/usb0I70hq95OUzmL9+6Zd+Hs4XV0oaISBa/UUMSjYiq6m8EUF32132mOJ8xVZS+I0S6w==}
-    peerDependencies:
-      react: ^18.0.0
-      react-dom: ^18.0.0
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-dom:
-        optional: true
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.8.1
-    optionalDependencies:
-      '@emotion/is-prop-valid': 0.8.8
-    dev: false
-
   /framer-motion@12.23.12(react-dom@19.1.1)(react@19.1.1):
     resolution: {integrity: sha512-6e78rdVtnBvlEVgu6eFEAgG9v3wLnYEboM8I5O5EXvfKC8gxGQB8wXJdhkMy10iVcn05jl6CNw7/HTsTCfwcWg==}
     peerDependencies:
@@ -3627,6 +3600,48 @@ packages:
         optional: true
     dependencies:
       motion-dom: 12.23.12
+      motion-utils: 12.23.6
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+      tslib: 2.8.1
+    dev: false
+
+  /framer-motion@12.23.22(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-ZgGvdxXCw55ZYvhoZChTlG6pUuehecgvEAJz0BHoC5pQKW1EC5xf1Mul1ej5+ai+pVY0pylyFfdl45qnM1/GsA==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      motion-dom: 12.23.21
+      motion-utils: 12.23.6
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tslib: 2.8.1
+    dev: false
+
+  /framer-motion@12.23.22(react-dom@19.1.1)(react@19.1.1):
+    resolution: {integrity: sha512-ZgGvdxXCw55ZYvhoZChTlG6pUuehecgvEAJz0BHoC5pQKW1EC5xf1Mul1ej5+ai+pVY0pylyFfdl45qnM1/GsA==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      motion-dom: 12.23.21
       motion-utils: 12.23.6
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
@@ -4168,6 +4183,12 @@ packages:
       motion-utils: 12.23.6
     dev: false
 
+  /motion-dom@12.23.21:
+    resolution: {integrity: sha512-5xDXx/AbhrfgsQmSE7YESMn4Dpo6x5/DTZ4Iyy4xqDvVHWvFVoV+V2Ri2S/ksx+D40wrZ7gPYiMWshkdoqNgNQ==}
+    dependencies:
+      motion-utils: 12.23.6
+    dev: false
+
   /motion-utils@12.23.6:
     resolution: {integrity: sha512-eAWoPgr4eFEOFfg2WjIsMoqJTW6Z8MTUCgn/GZ3VRpClWBdnbjryiA3ZSNLyxCTmCQx4RmYX6jX1iWHbenUPNQ==}
     dev: false
@@ -4560,6 +4581,11 @@ packages:
 
   /react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
+    dev: true
+
+  /react-is@19.1.1:
+    resolution: {integrity: sha512-tr41fA15Vn8p4X9ntI+yCyeGSf1TlYaY5vlTZfQmeLBrFo3psOPX6HhTDnFNL9uj3EhP0KAQ80cugCl4b4BERA==}
+    dev: false
 
   /react-redux@9.2.0(@types/react@19.1.10)(react@19.1.1)(redux@5.0.1):
     resolution: {integrity: sha512-ROY9fvHhwOD9ySfrF0wmvu//bKCQ6AeZZq1nJNtbDC+kk5DuSuNX/n6YWYF/SYy7bSba4D4FSz8DJeKY/S/r+g==}
@@ -4641,7 +4667,7 @@ packages:
     engines: {node: '>= 14.18.0'}
     dev: true
 
-  /recharts@3.1.2(@types/react@19.1.10)(react-dom@19.1.1)(react-is@18.3.1)(react@19.1.1)(redux@5.0.1):
+  /recharts@3.1.2(@types/react@19.1.10)(react-dom@19.1.1)(react-is@19.1.1)(react@19.1.1)(redux@5.0.1):
     resolution: {integrity: sha512-vhNbYwaxNbk/IATK0Ki29k3qvTkGqwvCgyQAQ9MavvvBwjvKnMTswdbklJpcOAoMPN/qxF3Lyqob0zO+ZXkZ4g==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -4657,7 +4683,7 @@ packages:
       immer: 10.1.1
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
-      react-is: 18.3.1
+      react-is: 19.1.1
       react-redux: 9.2.0(@types/react@19.1.10)(react@19.1.1)(redux@5.0.1)
       reselect: 5.1.1
       tiny-invariant: 1.3.3

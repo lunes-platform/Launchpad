@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import type { Network, PhaseConfig, LaunchpoolConfig } from "../types/mode";
 
 /**
- * Status do raffle
+ * Tipos de status para o sistema de raffle
  */
 export type RaffleStatusType =
   | "pending"
@@ -12,7 +12,7 @@ export type RaffleStatusType =
   | "cancelled";
 
 /**
- * Estado de uma fase de venda
+ * Interface para fases de venda do launchpad
  */
 export interface SalePhase extends PhaseConfig {
   id: string;
@@ -27,7 +27,7 @@ export interface SalePhase extends PhaseConfig {
  * Estado do contrato de launchpad
  */
 export interface LaunchpadContractState {
-  // Estado geral
+  // Estado básico
   isPaused: boolean;
   isInitialized: boolean;
   owner: string;
@@ -36,17 +36,17 @@ export interface LaunchpadContractState {
   currentPhase?: SalePhase;
   phases: SalePhase[];
 
-  // Estatísticas gerais
+  // Métricas gerais
   totalRaised: string;
   totalInvestors: number;
   totalProjects: number;
 
-  // Configurações
+  // Configurações de investimento
   minInvestment: string;
   maxInvestment: string;
   acceptedCurrencies: string[];
 
-  // Timestamps importantes
+  // Timestamps
   lastUpdated: number;
   nextPhaseStart?: number;
 }
@@ -55,14 +55,14 @@ export interface LaunchpadContractState {
  * Estado do contrato de raffle
  */
 export interface RaffleContractState {
-  // Estado geral
+  // Estado básico
   isActive: boolean;
   isPaused: boolean;
 
-  // Configuração atual
+  // Configuração
   config?: LaunchpoolConfig;
 
-  // Estatísticas
+  // Métricas do raffle
   totalParticipants: number;
   totalTickets: number;
   prizePool: string;
@@ -72,7 +72,7 @@ export interface RaffleContractState {
   drawTime?: number;
   winner?: string;
 
-  // Participação do usuário
+  // Estado do usuário
   userTickets: number;
   userEligible: boolean;
 
@@ -83,7 +83,7 @@ export interface RaffleContractState {
  * Estado do contrato de launchpool
  */
 export interface LaunchpoolContractState {
-  // Estado geral
+  // Estado básico
   isActive: boolean;
   isPaused: boolean;
 
@@ -103,7 +103,7 @@ export interface LaunchpoolContractState {
     isActive: boolean;
   }>;
 
-  // Estatísticas gerais
+  // Métricas globais
   totalValueLocked: string;
   totalRewardsDistributed: string;
   activeStakers: number;
@@ -112,21 +112,21 @@ export interface LaunchpoolContractState {
 }
 
 /**
- * Estado consolidado dos contratos
+ * Estado consolidado de todos os contratos
  */
 export interface ContractState {
   launchpad: LaunchpadContractState;
   raffle: RaffleContractState;
   launchpool: LaunchpoolContractState;
 
-  // Estado de carregamento
+  // Estados de carregamento
   loading: {
     launchpad: boolean;
     raffle: boolean;
     launchpool: boolean;
   };
 
-  // Erros
+  // Erros por contrato
   errors: {
     launchpad?: string;
     raffle?: string;
@@ -140,26 +140,21 @@ export interface ContractState {
 }
 
 /**
- * Configuração do hook
+ * Configuração do hook useContractState
  */
 export interface UseContractStateConfig {
   network: Network;
   autoRefresh?: boolean;
   refreshInterval?: number;
-  enableRealTimeUpdates?: boolean;
 }
 
 /**
- * Hook para gerenciar estado dos contratos
+ * Hook para gerenciar o estado dos contratos
  */
 export function useContractState(config: UseContractStateConfig) {
-  const {
-    network,
-    autoRefresh = true,
-    refreshInterval = 30000,
-    enableRealTimeUpdates = false,
-  } = config;
+  const { network, autoRefresh = true, refreshInterval = 30000 } = config;
 
+  // Estado principal
   const [state, setState] = useState<ContractState>({
     launchpad: {
       isPaused: false,
@@ -180,7 +175,7 @@ export function useContractState(config: UseContractStateConfig) {
       totalParticipants: 0,
       totalTickets: 0,
       prizePool: "0",
-      status: "pending" as RaffleStatusType,
+      status: "pending",
       userTickets: 0,
       userEligible: false,
       lastUpdated: 0,
@@ -205,147 +200,131 @@ export function useContractState(config: UseContractStateConfig) {
   });
 
   // Referências para controle de polling
-  const refreshIntervalRef = useRef<number>();
-  const abortControllerRef = useRef<AbortController>();
+  const refreshIntervalRef = useRef<number>(0);
+  const abortControllerRef = useRef<AbortController>(new AbortController());
 
   /**
    * Simula busca de dados do contrato de launchpad
    */
-  const fetchLaunchpadState =
-    useCallback(async (): Promise<LaunchpadContractState> => {
-      // Simula delay de rede
-      await new Promise((resolve) => setTimeout(resolve, 800));
+  const fetchLaunchpadState = useCallback(async (): Promise<LaunchpadContractState> => {
+    // Simula delay de rede
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
-      const now = Date.now();
-      const phases: SalePhase[] = [
-        {
-          id: "presale",
-          name: "Pre-Sale",
-          startTime: now - 86400000, // 1 dia atrás
-          endTime: now + 86400000 * 7, // 7 dias à frente
-          minInvestment: "100",
-          maxInvestment: "10000",
-          totalCap: "500000",
-          currentRaised: "125000",
-          isActive: true,
-          isUpcoming: false,
-          isPast: false,
-          progress: 25,
-          timeRemaining: 86400000 * 7,
-        },
-        {
-          id: "publicsale",
-          name: "Public Sale",
-          startTime: now + 86400000 * 7,
-          endTime: now + 86400000 * 14,
-          minInvestment: "50",
-          maxInvestment: "5000",
-          totalCap: "1000000",
-          currentRaised: "0",
-          isActive: false,
-          isUpcoming: true,
-          isPast: false,
-          progress: 0,
-          timeRemaining: 86400000 * 14,
-        },
-      ];
-
-      return {
-        isPaused: false,
-        isInitialized: true,
-        owner: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-        currentPhase: phases.find((p) => p.isActive),
-        phases,
-        totalRaised: "125000",
-        totalInvestors: 45,
-        totalProjects: 3,
-        minInvestment: "50",
+    const now = Date.now();
+    const phases: SalePhase[] = [
+      {
+        id: "presale",
+        name: "Pre-Sale",
+        startTime: now - 86400000, // 1 dia atrás
+        endTime: now + 86400000 * 7, // 7 dias à frente
+        minInvestment: "100",
         maxInvestment: "10000",
-        acceptedCurrencies: ["LUNES", "LUSDT"],
-        lastUpdated: now,
-        nextPhaseStart: now + 86400000 * 7,
-      };
-    }, []);
+        totalCap: "500000",
+        currentRaised: "125000",
+        isActive: true,
+        isUpcoming: false,
+        isPast: false,
+        progress: 25,
+        timeRemaining: 86400000 * 7,
+      },
+      {
+        id: "publicsale",
+        name: "Public Sale",
+        startTime: now + 86400000 * 7,
+        endTime: now + 86400000 * 14,
+        minInvestment: "50",
+        maxInvestment: "5000",
+        totalCap: "1000000",
+        currentRaised: "0",
+        isActive: false,
+        isUpcoming: true,
+        isPast: false,
+        progress: 0,
+        timeRemaining: 86400000 * 14,
+      },
+    ];
+
+    return {
+      isPaused: false,
+      isInitialized: true,
+      owner: "0x1234567890123456789012345678901234567890",
+      currentPhase: phases[0],
+      phases,
+      totalRaised: "125000",
+      totalInvestors: 42,
+      totalProjects: 3,
+      minInvestment: "50",
+      maxInvestment: "10000",
+      acceptedCurrencies: ["USDT", "USDC", "ETH"],
+      lastUpdated: now,
+      nextPhaseStart: now + 86400000 * 7,
+    };
+  }, []);
 
   /**
    * Simula busca de dados do contrato de raffle
    */
-  const fetchRaffleState =
-    useCallback(async (): Promise<RaffleContractState> => {
-      await new Promise((resolve) => setTimeout(resolve, 600));
+  const fetchRaffleState = useCallback(async (): Promise<RaffleContractState> => {
+    await new Promise((resolve) => setTimeout(resolve, 700));
 
-      const now = Date.now();
-
-      return {
-        isActive: true,
-        isPaused: false,
-        totalParticipants: 234,
-        totalTickets: 456,
-        prizePool: "5000",
-        status: "active" as RaffleStatusType,
-        drawTime: now + 86400000 * 4,
-        userTickets: 3,
-        userEligible: true,
-        lastUpdated: now,
-      };
-    }, []);
+    const now = Date.now();
+    return {
+      isActive: true,
+      isPaused: false,
+      totalParticipants: 156,
+      totalTickets: 1240,
+      prizePool: "50000",
+      status: "active",
+      drawTime: now + 86400000 * 2, // 2 dias
+      userTickets: 5,
+      userEligible: true,
+      lastUpdated: now,
+    };
+  }, []);
 
   /**
    * Simula busca de dados do contrato de launchpool
    */
-  const fetchLaunchpoolState =
-    useCallback(async (): Promise<LaunchpoolContractState> => {
-      await new Promise((resolve) => setTimeout(resolve, 700));
+  const fetchLaunchpoolState = useCallback(async (): Promise<LaunchpoolContractState> => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
-      const now = Date.now();
-
-      return {
-        isActive: true,
-        isPaused: false,
-        pools: [
-          {
-            id: "lunes-30d",
-            name: "LUNES 30 Days",
-            token: "LUNES",
-            apy: "12.5",
-            totalStaked: "250000",
-            userStaked: "1000",
-            rewards: "25.5",
-            lockPeriod: 86400000 * 30,
-            isActive: true,
-          },
-          {
-            id: "lunes-90d",
-            name: "LUNES 90 Days",
-            token: "LUNES",
-            apy: "18.7",
-            totalStaked: "180000",
-            userStaked: "500",
-            rewards: "15.2",
-            lockPeriod: 86400000 * 90,
-            isActive: true,
-          },
-          {
-            id: "lusdt-flexible",
-            name: "LUSDT Flexible",
-            token: "LUSDT",
-            apy: "8.2",
-            totalStaked: "75000",
-            userStaked: "0",
-            rewards: "0",
-            lockPeriod: 0,
-            isActive: true,
-          },
-        ],
-        totalValueLocked: "505000",
-        totalRewardsDistributed: "12500",
-        activeStakers: 1247,
-        lastUpdated: now,
-      };
-    }, []);
+    const now = Date.now();
+    return {
+      isActive: true,
+      isPaused: false,
+      pools: [
+        {
+          id: "pool-1",
+          name: "USDT Pool",
+          token: "USDT",
+          apy: "12.5",
+          totalStaked: "2500000",
+          userStaked: "1000",
+          rewards: "125",
+          lockPeriod: 30,
+          isActive: true,
+        },
+        {
+          id: "pool-2",
+          name: "ETH Pool",
+          token: "ETH",
+          apy: "8.2",
+          totalStaked: "850",
+          userStaked: "0.5",
+          rewards: "0.041",
+          lockPeriod: 60,
+          isActive: true,
+        },
+      ],
+      totalValueLocked: "5750000",
+      totalRewardsDistributed: "125000",
+      activeStakers: 234,
+      lastUpdated: now,
+    };
+  }, []);
 
   /**
-   * Atualiza estado do launchpad
+   * Atualiza o estado do launchpad
    */
   const refreshLaunchpadState = useCallback(async () => {
     setState((prev) => ({
@@ -376,7 +355,7 @@ export function useContractState(config: UseContractStateConfig) {
   }, [fetchLaunchpadState]);
 
   /**
-   * Atualiza estado do raffle
+   * Atualiza o estado do raffle
    */
   const refreshRaffleState = useCallback(async () => {
     setState((prev) => ({
@@ -395,9 +374,7 @@ export function useContractState(config: UseContractStateConfig) {
       }));
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Erro ao buscar estado do raffle";
+        error instanceof Error ? error.message : "Erro ao buscar estado do raffle";
       setState((prev) => ({
         ...prev,
         loading: { ...prev.loading, raffle: false },
@@ -407,7 +384,7 @@ export function useContractState(config: UseContractStateConfig) {
   }, [fetchRaffleState]);
 
   /**
-   * Atualiza estado do launchpool
+   * Atualiza o estado do launchpool
    */
   const refreshLaunchpoolState = useCallback(async () => {
     setState((prev) => ({
@@ -440,7 +417,7 @@ export function useContractState(config: UseContractStateConfig) {
   /**
    * Atualiza todos os estados
    */
-  const refreshAllStates = useCallback(async () => {
+  const refreshAll = useCallback(async () => {
     await Promise.all([
       refreshLaunchpadState(),
       refreshRaffleState(),
@@ -448,115 +425,27 @@ export function useContractState(config: UseContractStateConfig) {
     ]);
   }, [refreshLaunchpadState, refreshRaffleState, refreshLaunchpoolState]);
 
-  /**
-   * Verifica se algum contrato está pausado
-   */
-  const isAnyContractPaused = useCallback(() => {
-    return (
-      state.launchpad.isPaused ||
-      state.raffle.isPaused ||
-      state.launchpool.isPaused
-    );
-  }, [
-    state.launchpad.isPaused,
-    state.raffle.isPaused,
-    state.launchpool.isPaused,
-  ]);
+  // Carregamento inicial
+  useEffect(() => {
+    refreshAll();
+  }, [refreshAll]);
 
-  /**
-   * Obtém a fase ativa atual
-   */
-  const getCurrentPhase = useCallback(() => {
-    return state.launchpad.currentPhase;
-  }, [state.launchpad.currentPhase]);
+  // Auto-refresh
+  useEffect(() => {
+    if (!autoRefresh) return;
 
-  /**
-   * Obtém a próxima fase
-   */
-  const getNextPhase = useCallback(() => {
-    return state.launchpad.phases.find((phase) => phase.isUpcoming);
-  }, [state.launchpad.phases]);
+    refreshIntervalRef.current = window.setInterval(() => {
+      refreshAll();
+    }, refreshInterval);
 
-  /**
-   * Verifica se o usuário pode investir
-   */
-  const canInvest = useCallback(
-    (amount: string) => {
-      const currentPhase = getCurrentPhase();
-      if (!currentPhase || !currentPhase.isActive) {
-        return { canInvest: false, reason: "Nenhuma fase ativa" };
+    return () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
       }
-
-      const numAmount = parseFloat(amount);
-      const minInvestment = parseFloat(currentPhase.minInvestment);
-      const maxInvestment = parseFloat(currentPhase.maxInvestment);
-
-      if (numAmount < minInvestment) {
-        return {
-          canInvest: false,
-          reason: `Investimento mínimo: ${minInvestment}`,
-        };
-      }
-
-      if (numAmount > maxInvestment) {
-        return {
-          canInvest: false,
-          reason: `Investimento máximo: ${maxInvestment}`,
-        };
-      }
-
-      const totalCap = parseFloat(currentPhase.totalCap);
-      const currentRaised = parseFloat(currentPhase.currentRaised);
-
-      if (currentRaised + numAmount > totalCap) {
-        return { canInvest: false, reason: "Limite da fase excedido" };
-      }
-
-      return { canInvest: true };
-    },
-    [getCurrentPhase],
-  );
-
-  /**
-   * Obtém estatísticas consolidadas
-   */
-  const getStats = useCallback(() => {
-    return {
-      totalRaised: state.launchpad.totalRaised,
-      totalInvestors: state.launchpad.totalInvestors,
-      totalValueLocked: state.launchpool.totalValueLocked,
-      activeRaffleParticipants: state.raffle.totalParticipants,
-      isSystemHealthy: !isAnyContractPaused(),
     };
-  }, [state, isAnyContractPaused]);
+  }, [autoRefresh, refreshInterval, refreshAll]);
 
-  // Efeito para carregamento inicial
-  useEffect(() => {
-    refreshAllStates();
-  }, [refreshAllStates]);
-
-  // Efeito para auto-refresh
-  useEffect(() => {
-    if (autoRefresh && refreshInterval > 0) {
-      refreshIntervalRef.current = setInterval(
-        refreshAllStates,
-        refreshInterval,
-      );
-      return () => {
-        if (refreshIntervalRef.current) {
-          clearInterval(refreshIntervalRef.current);
-        }
-      };
-    }
-  }, [autoRefresh, refreshInterval, refreshAllStates]);
-
-  // Efeito para mudança de rede
-  useEffect(() => {
-    setState((prev) => ({ ...prev, network }));
-    refreshAllStates();
-  }, [network, refreshAllStates]);
-
-  // Cleanup
+  // Cleanup ao desmontar
   useEffect(() => {
     return () => {
       if (refreshIntervalRef.current) {
@@ -569,27 +458,12 @@ export function useContractState(config: UseContractStateConfig) {
   }, []);
 
   return {
-    // Estado
     ...state,
-
-    // Ações
-    refreshLaunchpadState,
-    refreshRaffleState,
-    refreshLaunchpoolState,
-    refreshAllStates,
-
-    // Utilitários
-    isAnyContractPaused,
-    getCurrentPhase,
-    getNextPhase,
-    canInvest,
-    getStats,
-
-    // Estados computados
-    isLoading: Object.values(state.loading).some((loading) => loading),
-    hasErrors: Object.values(state.errors).some((error) => error !== undefined),
-    isHealthy:
-      !isAnyContractPaused() &&
-      !Object.values(state.errors).some((error) => error !== undefined),
+    refresh: {
+      all: refreshAll,
+      launchpad: refreshLaunchpadState,
+      raffle: refreshRaffleState,
+      launchpool: refreshLaunchpoolState,
+    },
   };
 }

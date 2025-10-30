@@ -93,7 +93,7 @@ export const useLunesExtensionMock = (): UseLunesExtensionReturn => {
     },
   ];
 
-  // Mock do injector
+  // Mock do injector com signer funcional
   const mockInjector: InjectedExtension = {
     name: "polkadot-js",
     version: "0.44.1",
@@ -101,7 +101,18 @@ export const useLunesExtensionMock = (): UseLunesExtensionReturn => {
       get: async () => mockAccounts,
       subscribe: () => () => {},
     },
-    signer: {} as any,
+    signer: {
+      signPayload: async () => ({ id: 1, signature: '0x00' }),
+      signRaw: async (raw: { address: string; data: string; type: string }) => {
+        console.log('🖊️ Mock signRaw chamado:', { address: raw.address.slice(0, 10) + '...', dataLength: raw.data.length });
+        // Simula uma assinatura válida (64 bytes = 128 caracteres hex + 0x)
+        const mockSignature = '0x' + '0'.repeat(128);
+        return { 
+          id: 1, 
+          signature: mockSignature 
+        };
+      },
+    } as any,
   };
 
   /**

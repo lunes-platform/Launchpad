@@ -18,14 +18,14 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 const badgeVariants = {
   default:
-    "bg-gray-100 dark:bg-grafite-700 text-gray-800 dark:text-grafite-200 border-gray-200 dark:border-grafite-600",
-  primary: "bg-roxo-claro text-roxo border-roxo-claro",
-  secondary: "bg-grafite-claro text-grafite border-grafite-claro",
-  success: "bg-verde-claro text-verde border-verde-claro",
-  warning: "bg-laranja-claro text-laranja border-laranja-claro",
+    "bg-gray-200 dark:bg-grafite-700 text-gray-900 dark:text-grafite-100 border-gray-300 dark:border-grafite-600 font-semibold",
+  primary: "bg-roxo-claro text-white border-roxo-claro font-semibold",
+  secondary: "bg-grafite-claro text-white border-grafite-claro font-semibold",
+  success: "bg-verde-claro text-white border-verde-claro font-semibold",
+  warning: "bg-laranja-claro text-white border-laranja-claro font-semibold",
   error:
-    "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 border-red-200 dark:border-red-800",
-  info: "bg-roxo-claro text-roxo border-roxo-claro",
+    "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 border-red-200 dark:border-red-800 font-semibold",
+  info: "bg-roxo-claro text-white border-roxo-claro font-semibold",
 };
 
 const badgeSizes = {

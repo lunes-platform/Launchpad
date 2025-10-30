@@ -10,6 +10,7 @@ export { default as WalletPage } from "./wallet/WalletPage";
 export { default as VipPage } from "./vip/VipPage";
 export { default as VipReportsPage } from "./vip/VipReportsPage";
 export { default as UpgradeVipPage } from "./vip/UpgradeVipPage";
+export { default as ReportPage } from "./ReportPage";
 export { default as LoginPage } from "./auth/LoginPage";
 export { default as KYCPage } from "./auth/KYCPage";
 export { default as InvestorRankingPage } from "./InvestorRankingPage";

@@ -1,0 +1,489 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== USUÁRIOS =====
+model User {
+  id                String   @id @default(cuid())
+  walletAddress     String   @unique
+  email             String?  @unique
+  username          String?  @unique
+  displayName       String?
+  avatar            String?
+  bio               String?
+  isVerified        Boolean  @default(false)
+  isActive          Boolean  @default(true)
+  kycStatus         KycStatus @default(PENDING)
+  kycData           Json?
+  totalStaked       Decimal  @default(0) @db.Decimal(20, 8)
+  totalRewards      Decimal  @default(0) @db.Decimal(20, 8)
+  referralCode      String?  @unique
+  referredBy        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relacionamentos
+  projects          Project[]
+  participations    Participation[]
+  stakings          Staking[]
+  launchpoolStakes  LaunchpoolStake[]
+  raffleEntries     RaffleEntry[]
+  amaQuestions      AmaQuestion[]
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+
+  @@map("users")
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+// ===== PROJETOS =====
+model Project {
+  id                String        @id @default(cuid())
+  name              String
+  symbol            String
+  description       String
+  longDescription   String?
+  website           String?
+  whitepaper        String?
+  twitter           String?
+  telegram          String?
+  discord           String?
+  github            String?
+  logo              String?
+  banner            String?
+  category          String?
+  tags              String[]
+  
+  // Dados do token
+  tokenAddress      String?
+  tokenDecimals     Int           @default(18)
+  totalSupply       Decimal       @db.Decimal(30, 8)
+  
+  // Configurações do launchpad
+  targetAmount      Decimal       @db.Decimal(20, 8)
+  minContribution   Decimal       @db.Decimal(20, 8)
+  maxContribution   Decimal       @db.Decimal(20, 8)
+  tokenPrice        Decimal       @db.Decimal(20, 8)
+  
+  // Status e datas
+  status            ProjectStatus @default(DRAFT)
+  startDate         DateTime?
+  endDate           DateTime?
+  vestingPeriod     Int?          // em dias
+  
+  // Criador
+  creatorId         String
+  creator           User          @relation(fields: [creatorId], references: [id])
+  
+  // Timestamps
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relacionamentos
+  phases            ProjectPhase[]
+  participations    Participation[]
+  stakings          Staking[]
+  launchpools       Launchpool[]
+  raffles           Raffle[]
+  amas              Ama[]
+  analytics         ProjectAnalytics[]
+
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+// ===== FASES DO PROJETO =====
+model ProjectPhase {
+  id            String      @id @default(cuid())
+  projectId     String
+  project       Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  name          String
+  description   String?
+  phaseType     PhaseType
+  startDate     DateTime
+  endDate       DateTime
+  targetAmount  Decimal     @db.Decimal(20, 8)
+  minAmount     Decimal?    @db.Decimal(20, 8)
+  maxAmount     Decimal?    @db.Decimal(20, 8)
+  isActive      Boolean     @default(false)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relacionamentos
+  participations Participation[]
+
+  @@map("project_phases")
+}
+
+enum PhaseType {
+  PRIVATE_SALE
+  PRE_SALE
+  PUBLIC_SALE
+  STAKING
+  LAUNCHPOOL
+  RAFFLE
+}
+
+// ===== PARTICIPAÇÕES =====
+model Participation {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  projectId       String
+  project         Project       @relation(fields: [projectId], references: [id])
+  phaseId         String?
+  phase           ProjectPhase? @relation(fields: [phaseId], references: [id])
+  
+  amount          Decimal       @db.Decimal(20, 8)
+  tokenAmount     Decimal       @db.Decimal(20, 8)
+  status          ParticipationStatus @default(PENDING)
+  txHash          String?
+  blockNumber     BigInt?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([userId, projectId, phaseId])
+  @@map("participations")
+}
+
+enum ParticipationStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  REFUNDED
+}
+
+// ===== STAKING =====
+model Staking {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  projectId       String?
+  project         Project?      @relation(fields: [projectId], references: [id])
+  
+  amount          Decimal       @db.Decimal(20, 8)
+  rewardAmount    Decimal       @default(0) @db.Decimal(20, 8)
+  apy             Decimal       @db.Decimal(5, 2)
+  startDate       DateTime
+  endDate         DateTime?
+  isActive        Boolean       @default(true)
+  
+  txHash          String?
+  blockNumber     BigInt?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("stakings")
+}
+
+// ===== LAUNCHPOOL =====
+model Launchpool {
+  id              String            @id @default(cuid())
+  projectId       String
+  project         Project           @relation(fields: [projectId], references: [id])
+  
+  name            String
+  description     String?
+  rewardToken     String
+  totalRewards    Decimal           @db.Decimal(20, 8)
+  startDate       DateTime
+  endDate         DateTime
+  isActive        Boolean           @default(true)
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relacionamentos
+  stakes          LaunchpoolStake[]
+
+  @@map("launchpools")
+}
+
+model LaunchpoolStake {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  launchpoolId    String
+  launchpool      Launchpool  @relation(fields: [launchpoolId], references: [id])
+  
+  amount          Decimal     @db.Decimal(20, 8)
+  rewardAmount    Decimal     @default(0) @db.Decimal(20, 8)
+  startDate       DateTime
+  endDate         DateTime?
+  isActive        Boolean     @default(true)
+  
+  txHash          String?
+  blockNumber     BigInt?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@unique([userId, launchpoolId])
+  @@map("launchpool_stakes")
+}
+
+// ===== RAFFLE =====
+model Raffle {
+  id              String        @id @default(cuid())
+  projectId       String
+  project         Project       @relation(fields: [projectId], references: [id])
+  
+  name            String
+  description     String?
+  totalTickets    Int
+  ticketPrice     Decimal       @db.Decimal(20, 8)
+  maxTicketsPerUser Int?
+  startDate       DateTime
+  endDate         DateTime
+  drawDate        DateTime?
+  isActive        Boolean       @default(true)
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relacionamentos
+  entries         RaffleEntry[]
+
+  @@map("raffles")
+}
+
+model RaffleEntry {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  raffleId        String
+  raffle          Raffle    @relation(fields: [raffleId], references: [id])
+  
+  ticketNumbers   Int[]
+  amount          Decimal   @db.Decimal(20, 8)
+  isWinner        Boolean   @default(false)
+  
+  txHash          String?
+  blockNumber     BigInt?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("raffle_entries")
+}
+
+// ===== AMA =====
+model Ama {
+  id              String        @id @default(cuid())
+  projectId       String
+  project         Project       @relation(fields: [projectId], references: [id])
+  
+  title           String
+  description     String?
+  startDate       DateTime
+  endDate         DateTime
+  isActive        Boolean       @default(true)
+  maxQuestions    Int?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relacionamentos
+  questions       AmaQuestion[]
+
+  @@map("amas")
+}
+
+model AmaQuestion {
+  id              String    @id @default(cuid())
+  amaId           String
+  ama             Ama       @relation(fields: [amaId], references: [id])
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  
+  question        String
+  answer          String?
+  isAnswered      Boolean   @default(false)
+  votes           Int       @default(0)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("ama_questions")
+}
+
+// ===== ANALYTICS =====
+model ProjectAnalytics {
+  id              String    @id @default(cuid())
+  projectId       String
+  project         Project   @relation(fields: [projectId], references: [id])
+  
+  date            DateTime  @db.Date
+  totalRaised     Decimal   @default(0) @db.Decimal(20, 8)
+  participantCount Int      @default(0)
+  avgContribution Decimal   @default(0) @db.Decimal(20, 8)
+  conversionRate  Decimal   @default(0) @db.Decimal(5, 4)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([projectId, date])
+  @@map("project_analytics")
+}
+
+model SystemAnalytics {
+  id              String    @id @default(cuid())
+  date            DateTime  @db.Date
+  
+  totalUsers      Int       @default(0)
+  activeUsers     Int       @default(0)
+  totalProjects   Int       @default(0)
+  activeProjects  Int       @default(0)
+  totalVolume     Decimal   @default(0) @db.Decimal(20, 8)
+  totalFees       Decimal   @default(0) @db.Decimal(20, 8)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([date])
+  @@map("system_analytics")
+}
+
+// ===== BLOCKCHAIN =====
+model BlockchainTransaction {
+  id              String              @id @default(cuid())
+  txHash          String              @unique
+  blockNumber     BigInt
+  blockHash       String
+  fromAddress     String
+  toAddress       String
+  value           Decimal             @db.Decimal(30, 8)
+  gasUsed         BigInt
+  gasPrice        Decimal             @db.Decimal(30, 0)
+  status          TransactionStatus   @default(PENDING)
+  eventType       String?
+  eventData       Json?
+  
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([blockNumber])
+  @@index([fromAddress])
+  @@index([toAddress])
+  @@index([eventType])
+  @@map("blockchain_transactions")
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+model BlockchainEvent {
+  id              String    @id @default(cuid())
+  txHash          String
+  blockNumber     BigInt
+  logIndex        Int
+  address         String
+  eventName       String
+  eventData       Json
+  processed       Boolean   @default(false)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([txHash, logIndex])
+  @@index([blockNumber])
+  @@index([address])
+  @@index([eventName])
+  @@index([processed])
+  @@map("blockchain_events")
+}
+
+// ===== NOTIFICAÇÕES =====
+model Notification {
+  id              String            @id @default(cuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id])
+  
+  type            NotificationType
+  title           String
+  message         String
+  data            Json?
+  isRead          Boolean           @default(false)
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  PROJECT_UPDATE
+  PARTICIPATION_CONFIRMED
+  STAKING_REWARD
+  RAFFLE_RESULT
+  AMA_ANSWER
+  SYSTEM_ALERT
+}
+
+// ===== AUDITORIA =====
+model AuditLog {
+  id              String    @id @default(cuid())
+  userId          String?
+  user            User?     @relation(fields: [userId], references: [id])
+  
+  action          String
+  resource        String
+  resourceId      String?
+  oldValues       Json?
+  newValues       Json?
+  ipAddress       String?
+  userAgent       String?
+  
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ===== CONFIGURAÇÕES =====
+model SystemConfig {
+  id              String    @id @default(cuid())
+  key             String    @unique
+  value           String
+  description     String?
+  isActive        Boolean   @default(true)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("system_config")
+}
