@@ -23,6 +23,8 @@ export interface UsePolkadotApiReturn {
   disconnect: () => Promise<void>;
   /** Função para obter saldo de uma conta */
   getBalance: (address: string) => Promise<string | null>;
+  /** Função para obter saldo bruto de uma conta */
+  getRawBalance: (address: string) => Promise<string | null>;
   /** Função para obter informações da chain */
   getChainInfo: () => Promise<{
     name: string;
@@ -150,6 +152,28 @@ export const usePolkadotApi = (
   );
 
   /**
+   * Função para obter saldo bruto (sem formatação) de uma conta
+   */
+  const getRawBalance = useCallback(
+    async (address: string): Promise<string | null> => {
+      if (!api || !isConnected) {
+        return null;
+      }
+
+      try {
+        const accountInfo = (await api.query.system.account(
+          address,
+        )) as AccountInfo;
+        return accountInfo.data.free.toString();
+      } catch (err) {
+        console.error("Erro ao obter saldo bruto:", err);
+        return null;
+      }
+    },
+    [api, isConnected],
+  );
+
+  /**
    * Função para obter informações da chain
    */
   const getChainInfo = useCallback(async () => {
@@ -259,6 +283,7 @@ export const usePolkadotApi = (
     connect,
     disconnect,
     getBalance,
+    getRawBalance,
     getChainInfo,
     transfer,
   };
