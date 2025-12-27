@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@launchpad/shared-ui";
 import { Badge } from "../components/ui/Badge";
 import { FadeIn } from "../components/animations/FadeIn";
 import { ScaleIn } from "../components/animations/ScaleIn";
-import { useLaunchpoolStore } from "../stores/launchpoolStore";
+import { useLaunchpoolStore, type Pool } from "../stores/launchpoolStore";
 import { TrendingUp, Clock, Users, Coins } from "lucide-react";
+import StakingModal from "../components/modals/StakingModal";
 
 /**
  * Página do Launchpool - Exibe pools de liquidez e oportunidades de staking
@@ -17,6 +18,9 @@ export default function LaunchpoolPage() {
     fetchPools, 
     stakeTokens 
   } = useLaunchpoolStore();
+
+  const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
+  const [showStakingModal, setShowStakingModal] = useState(false);
 
   useEffect(() => {
     fetchPools();
@@ -49,8 +53,11 @@ export default function LaunchpoolPage() {
   };
 
   const handleStake = async (poolId: string) => {
-    // TODO: Implementar modal de staking
-    console.log('Staking in pool:', poolId);
+    const pool = pools.find(p => p.id === poolId);
+    if (pool) {
+      setSelectedPool(pool);
+      setShowStakingModal(true);
+    }
   };
 
   if (isLoading) {
@@ -193,6 +200,12 @@ export default function LaunchpoolPage() {
           </div>
         </div>
       </FadeIn>
+
+      <StakingModal
+        isOpen={showStakingModal}
+        onClose={() => setShowStakingModal(false)}
+        pool={selectedPool}
+      />
     </div>
   );
 }
