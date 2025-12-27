@@ -2,6 +2,8 @@ import { signatureVerify, cryptoWaitReady } from '@polkadot/util-crypto';
 import { u8aToHex, hexToU8a, stringToU8a } from '@polkadot/util';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import speakeasy from 'speakeasy';
+import QRCode from 'qrcode';
 import { prisma } from '../../shared/database';
 import { redisService } from '../../shared/redis';
 import { Logger } from '../../shared/logger';
@@ -353,6 +355,7 @@ export class AuthService {
         referralCode: true,
         createdAt: true,
         updatedAt: true,
+        twoFactorEnabled: true,
       },
     });
 
@@ -361,6 +364,70 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  // Gerar segredo 2FA
+  async generateTwoFactorSecret(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error('Usuário não encontrado');
+
+    const secret = speakeasy.generateSecret({
+      name: `Lunes Launchpad (${user.email || user.walletAddress})`
+    });
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorSecret: secret.base32 }
+    });
+
+    const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url || '');
+
+    return {
+      secret: secret.base32,
+      qrCodeUrl
+    };
+  }
+
+  // Verificar e habilitar 2FA
+  async verifyAndEnableTwoFactor(userId: string, token: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.twoFactorSecret) throw new Error('2FA não iniciado');
+
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFactorSecret,
+      encoding: 'base32',
+      token
+    });
+
+    if (verified) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { twoFactorEnabled: true }
+      });
+      return true;
+    }
+
+    return false;
+  }
+
+  // Validar token 2FA
+  async validateTwoFactor(userId: string, token: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    // Se 2FA não estiver habilitado, consideramos válido (dependendo da regra de negócio)
+    // Mas aqui vamos assumir que se chamou validar, é porque precisa validar
+    if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
+      throw new Error('2FA não habilitado para este usuário');
+    }
+
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFactorSecret,
+      encoding: 'base32',
+      token,
+      window: 1 // Permite uma pequena margem de erro no tempo (30s antes ou depois)
+    });
+
+    return verified;
   }
 
   // Verificar se token está na blacklist

@@ -312,6 +312,60 @@ export const stakingApi = {
 };
 
 /**
+ * Serviços relacionados a autenticação e segurança
+ */
+export const authApi = {
+  /**
+   * Valida o código 2FA
+   */
+  async validateTwoFactor(token: string): Promise<{
+    success: boolean;
+    valid: boolean;
+    message?: string;
+  }> {
+    if (shouldUseMockApi()) {
+       // Mock behavior matching the previous simulation but more structured
+       await new Promise((resolve) => setTimeout(resolve, 500));
+       if (token === "123456") {
+         return { success: true, valid: true };
+       }
+       return { success: false, valid: false, message: "Código de autenticação inválido" };
+    }
+
+    return fetchApi('/auth/2fa/validate', {
+      method: 'POST',
+      body: JSON.stringify({ token })
+    });
+  },
+
+  /**
+   * Gera o segredo 2FA (QR Code)
+   */
+  async generateTwoFactor(): Promise<{
+    success: boolean;
+    data: {
+      secret: string;
+      qrCodeUrl: string;
+    };
+  }> {
+    return fetchApi('/auth/2fa/generate', { method: 'POST' });
+  },
+
+  /**
+   * Verifica e ativa o 2FA
+   */
+  async verifyTwoFactor(token: string): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    return fetchApi('/auth/2fa/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token })
+    });
+  }
+};
+
+/**
  * Serviços relacionados a preços e cotações
  */
 export const pricesApi = {
@@ -422,5 +476,6 @@ export default {
   staking: stakingApi,
   prices: pricesApi,
   notifications: notificationsApi,
+  auth: authApi,
   handleError: handleApiError,
 };
