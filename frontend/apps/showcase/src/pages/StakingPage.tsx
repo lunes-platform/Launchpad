@@ -34,6 +34,7 @@ import { useLaunchpoolStore } from '../stores/launchpoolStore';
 import { useStakingPools, useUserStaking } from '../hooks/useApi';
 import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from '../contexts/AuthContext';
+import { usePolkadotApi } from '../hooks/usePolkadotApi';
 
 /**
  * Página de Staking - Interface completa para staking de tokens
@@ -42,6 +43,7 @@ import { useAuth } from '../contexts/AuthContext';
 export default function StakingPage() {
   const { selectedAccount, isReady } = useWallet();
   const { user } = useAuth();
+  const { api } = usePolkadotApi();
   const {
     pools,
     userStakes,
@@ -154,11 +156,11 @@ export default function StakingPage() {
 
   // Função para fazer stake
   const handleStake = async () => {
-    if (!selectedPool || !stakeAmount || !selectedAccount?.address) return;
+    if (!selectedPool || !stakeAmount || !selectedAccount?.address || !api) return;
     
     setIsProcessing(true);
     try {
-      await stakeTokens(selectedPool, stakeAmount);
+      await stakeTokens(selectedPool, stakeAmount, api, selectedAccount);
       setStakeAmount('');
       setShowStakeModal(false);
       // Recarregar dados
@@ -172,11 +174,11 @@ export default function StakingPage() {
 
   // Função para fazer unstake
   const handleUnstake = async () => {
-    if (!selectedPool || !unstakeAmount || !selectedAccount?.address) return;
+    if (!selectedPool || !unstakeAmount || !selectedAccount?.address || !api) return;
     
     setIsProcessing(true);
     try {
-      await unstakeTokens(selectedPool, unstakeAmount);
+      await unstakeTokens(selectedPool, unstakeAmount, api, selectedAccount);
       setUnstakeAmount('');
       setShowUnstakeModal(false);
       // Recarregar dados

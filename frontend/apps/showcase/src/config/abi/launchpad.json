@@ -1,0 +1,172 @@
+{
+  "source": {
+    "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "language": "ink! 4.0.0",
+    "compiler": "rustc 1.70.0"
+  },
+  "contract": {
+    "name": "complete_launchpad",
+    "version": "0.1.0",
+    "authors": ["Lunes"]
+  },
+  "spec": {
+    "constructors": [],
+    "messages": [
+      {
+        "args": [],
+        "docs": ["Fazer stake de LUNES"],
+        "label": "stake",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": ["Result"],
+          "type": 1
+        },
+        "selector": "0x9e7a1773"
+      },
+      {
+        "args": [
+          {
+            "label": "amount",
+            "type": {
+              "displayName": ["Balance"],
+              "type": 3
+            }
+          }
+        ],
+        "docs": ["Fazer unstake de LUNES"],
+        "label": "unstake",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": ["Result"],
+          "type": 1
+        },
+        "selector": "0x2f865bd9"
+      }
+    ],
+    "events": [
+      {
+        "args": [
+          {
+            "indexed": true,
+            "label": "user",
+            "type": {
+              "displayName": ["AccountId"],
+              "type": 4
+            }
+          },
+          {
+            "indexed": false,
+            "label": "amount",
+            "type": {
+              "displayName": ["Balance"],
+              "type": 3
+            }
+          },
+          {
+            "indexed": false,
+            "label": "new_total",
+            "type": {
+              "displayName": ["Balance"],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "Staked"
+      }
+    ]
+  },
+  "types": [
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "Ok",
+                "fields": []
+              },
+              {
+                "index": 1,
+                "name": "Err",
+                "fields": [
+                  {
+                    "type": 2
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "path": ["Result"]
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "ZeroAmount"
+              },
+              {
+                "index": 1,
+                "name": "TransferFailed"
+              }
+            ]
+          }
+        },
+        "path": ["Error"]
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "u128"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 5,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": ["ink_primitives", "types", "AccountId"]
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 6
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    }
+  ]
+}

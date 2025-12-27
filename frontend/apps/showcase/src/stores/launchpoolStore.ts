@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { ApiPromise } from '@polkadot/api';
+import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import { LaunchpoolService } from '../services/LaunchpoolService';
 
 /**
  * Tipos para o sistema de Launchpool/Staking
@@ -63,8 +66,8 @@ interface LaunchpoolState {
   // Ações
   fetchPools: () => Promise<void>;
   fetchUserStakes: () => Promise<void>;
-  stakeTokens: (poolId: string, amount: string) => Promise<boolean>;
-  unstakeTokens: (poolId: string, amount: string) => Promise<boolean>;
+  stakeTokens: (poolId: string, amount: string, api: ApiPromise, account: InjectedAccountWithMeta) => Promise<boolean>;
+  unstakeTokens: (poolId: string, amount: string, api: ApiPromise, account: InjectedAccountWithMeta) => Promise<boolean>;
   claimRewards: (poolId: string) => Promise<boolean>;
   claimAllRewards: () => Promise<boolean>;
   calculateRewards: (poolId: string) => string;
@@ -216,14 +219,15 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
       }
     },
     
-    stakeTokens: async (poolId: string, amount: string) => {
+    stakeTokens: async (poolId: string, amount: string, api: ApiPromise, account: InjectedAccountWithMeta) => {
       set({ isStaking: true });
+      const txId = `stake-${Date.now()}`;
       
       try {
-        // TODO: Integrar com smart contract
-        // Simular transação por enquanto
+        const service = new LaunchpoolService(api);
+
         const newTransaction: StakingTransaction = {
-          id: `stake-${Date.now()}`,
+          id: txId,
           type: 'stake',
           poolId,
           amount,
@@ -235,14 +239,13 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
           transactions: [newTransaction, ...state.transactions]
         }));
         
-        // Simular delay da transação
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        const txHash = await service.stake(account, amount);
         
         // Atualizar transação como confirmada
         set(state => ({
           transactions: state.transactions.map(tx => 
-            tx.id === newTransaction.id 
-              ? { ...tx, status: 'confirmed' as const, txHash: '0x...' }
+            tx.id === txId
+              ? { ...tx, status: 'confirmed' as const, txHash: txHash }
               : tx
           ),
           isStaking: false
@@ -256,18 +259,28 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
         
       } catch (error) {
         console.error('Erro ao fazer stake:', error);
-        set({ isStaking: false });
+        set(state => ({
+          transactions: state.transactions.map(tx =>
+            tx.id === txId
+              ? { ...tx, status: 'failed' as const }
+              : tx
+          ),
+          isStaking: false
+        }));
+
         return false;
       }
     },
     
-    unstakeTokens: async (poolId: string, amount: string) => {
+    unstakeTokens: async (poolId: string, amount: string, api: ApiPromise, account: InjectedAccountWithMeta) => {
       set({ isUnstaking: true });
+      const txId = `unstake-${Date.now()}`;
       
       try {
-        // TODO: Integrar com smart contract
+        const service = new LaunchpoolService(api);
+
         const newTransaction: StakingTransaction = {
-          id: `unstake-${Date.now()}`,
+          id: txId,
           type: 'unstake',
           poolId,
           amount,
@@ -279,12 +292,12 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
           transactions: [newTransaction, ...state.transactions]
         }));
         
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        const txHash = await service.unstake(account, amount);
         
         set(state => ({
           transactions: state.transactions.map(tx => 
-            tx.id === newTransaction.id 
-              ? { ...tx, status: 'confirmed' as const, txHash: '0x...' }
+            tx.id === txId
+              ? { ...tx, status: 'confirmed' as const, txHash: txHash }
               : tx
           ),
           isUnstaking: false
@@ -297,7 +310,14 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
         
       } catch (error) {
         console.error('Erro ao fazer unstake:', error);
-        set({ isUnstaking: false });
+        set(state => ({
+          transactions: state.transactions.map(tx =>
+            tx.id === txId
+              ? { ...tx, status: 'failed' as const }
+              : tx
+          ),
+          isUnstaking: false
+        }));
         return false;
       }
     },
