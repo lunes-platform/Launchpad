@@ -18,6 +18,10 @@ const verifyTokenSchema = z.object({
   token: z.string().min(1, 'Token é obrigatório'),
 });
 
+const twoFactorSchema = z.object({
+  token: z.string().length(6, 'O código deve ter 6 dígitos'),
+});
+
 export class AuthController {
   private authService: AuthService;
 
@@ -233,6 +237,123 @@ export class AuthController {
       reply.code(500).send({
         success: false,
         message: 'Erro interno do servidor',
+      });
+    }
+  }
+
+  // POST /auth/2fa/generate
+  async generate2FA(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const user = (request as any).user;
+      if (!user) {
+        reply.code(401).send({ success: false, message: 'Usuário não autenticado' });
+        return;
+      }
+
+      const { secret, otpauth } = await this.authService.generateTwoFactorSecret(user.id);
+
+      reply.code(200).send({
+        success: true,
+        data: { secret, otpauth },
+        message: 'Segredo 2FA gerado com sucesso',
+      });
+    } catch (error) {
+      Logger.error('Erro ao gerar 2FA', error);
+      reply.code(500).send({
+        success: false,
+        message: error instanceof Error ? error.message : 'Erro interno do servidor',
+      });
+    }
+  }
+
+  // POST /auth/2fa/enable
+  async enable2FA(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const user = (request as any).user;
+      if (!user) {
+        reply.code(401).send({ success: false, message: 'Usuário não autenticado' });
+        return;
+      }
+
+      const body = twoFactorSchema.parse(request.body);
+      await this.authService.enableTwoFactor(user.id, body.token);
+
+      reply.code(200).send({
+        success: true,
+        message: '2FA ativado com sucesso',
+      });
+    } catch (error) {
+      Logger.error('Erro ao ativar 2FA', error);
+      if (error instanceof z.ZodError) {
+        reply.code(400).send({ success: false, message: 'Código inválido', errors: error.errors });
+        return;
+      }
+      reply.code(400).send({
+        success: false,
+        message: error instanceof Error ? error.message : 'Erro ao ativar 2FA',
+      });
+    }
+  }
+
+  // POST /auth/2fa/validate
+  async validate2FA(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const user = (request as any).user;
+      if (!user) {
+        reply.code(401).send({ success: false, message: 'Usuário não autenticado' });
+        return;
+      }
+
+      const body = twoFactorSchema.parse(request.body);
+      const isValid = await this.authService.validateTwoFactor(user.id, body.token);
+
+      if (!isValid) {
+        reply.code(400).send({ success: false, message: 'Código inválido' });
+        return;
+      }
+
+      reply.code(200).send({
+        success: true,
+        message: 'Código válido',
+      });
+    } catch (error) {
+      Logger.error('Erro ao validar 2FA', error);
+      if (error instanceof z.ZodError) {
+        reply.code(400).send({ success: false, message: 'Código inválido', errors: error.errors });
+        return;
+      }
+      reply.code(400).send({
+        success: false,
+        message: error instanceof Error ? error.message : 'Erro ao validar 2FA',
+      });
+    }
+  }
+
+  // POST /auth/2fa/disable
+  async disable2FA(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const user = (request as any).user;
+      if (!user) {
+        reply.code(401).send({ success: false, message: 'Usuário não autenticado' });
+        return;
+      }
+
+      const body = twoFactorSchema.parse(request.body);
+      await this.authService.disableTwoFactor(user.id, body.token);
+
+      reply.code(200).send({
+        success: true,
+        message: '2FA desativado com sucesso',
+      });
+    } catch (error) {
+      Logger.error('Erro ao desativar 2FA', error);
+      if (error instanceof z.ZodError) {
+        reply.code(400).send({ success: false, message: 'Código inválido', errors: error.errors });
+        return;
+      }
+      reply.code(400).send({
+        success: false,
+        message: error instanceof Error ? error.message : 'Erro ao desativar 2FA',
       });
     }
   }
