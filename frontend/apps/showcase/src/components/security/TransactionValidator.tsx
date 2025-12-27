@@ -247,7 +247,28 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
     }
 
     // TODO: Verificar se o usuário tem tokens suficientes em staking
+    const userMetrics = user!.metrics;
+    if (userMetrics.totalStaked < amount) {
+      errors.push(
+        `Você não possui tokens suficientes em staking (Disponível: ${userMetrics.totalStaked} ${token})`,
+      );
+    }
+
     // TODO: Verificar período de lock
+    const userLimits = user!.limits;
+    if (userMetrics.lastStakingAt && userLimits.minStakingPeriod > 0) {
+      const lastStakingTime = new Date(userMetrics.lastStakingAt).getTime();
+      const lockPeriodMs = userLimits.minStakingPeriod * 24 * 60 * 60 * 1000;
+      const unlockTime = lastStakingTime + lockPeriodMs;
+      const now = Date.now();
+
+      if (now < unlockTime) {
+        const unlockDate = new Date(unlockTime);
+        errors.push(
+          `Tokens bloqueados até ${unlockDate.toLocaleDateString()} ${unlockDate.toLocaleTimeString()}`,
+        );
+      }
+    }
 
     warnings.push("Unstaking pode levar alguns blocos para ser processado");
   };
