@@ -1,0 +1,124 @@
+{
+  "source": {
+    "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "language": "ink! 4.0.0",
+    "compiler": "rustc 1.68.0"
+  },
+  "contract": {
+    "name": "raffle_system",
+    "version": "0.1.0",
+    "authors": ["Lunes Team"]
+  },
+  "spec": {
+    "constructors": [],
+    "docs": [],
+    "events": [],
+    "lang_error": {
+      "id": 0,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink",
+          "LangError"
+        ]
+      }
+    },
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "project_id",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "label": "tickets",
+            "type": {
+              "displayName": [
+                "u32"
+              ],
+              "type": 2
+            }
+          }
+        ],
+        "docs": [
+          " Comprar tickets para participar do raffle"
+        ],
+        "label": "buy_raffle_tickets",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": [
+            "Result"
+          ],
+          "type": 3
+        },
+        "selector": "0x12345678"
+      }
+    ]
+  },
+  "storage": {
+    "struct": {
+      "fields": []
+    }
+  },
+  "types": [
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "primitive": "str"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "Ok",
+                "fields": []
+              },
+              {
+                "index": 1,
+                "name": "Err",
+                "fields": [
+                   {
+                     "type": 1
+                   }
+                ]
+              }
+            ]
+          }
+        },
+        "path": [
+          "Result"
+        ]
+      }
+    }
+  ]
+}
