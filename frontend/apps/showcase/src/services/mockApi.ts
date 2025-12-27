@@ -8,7 +8,8 @@
 import type { 
   Project, 
   UserInvestment, 
-  StakingPool
+  StakingPool,
+  SecurityAuditEvent
 } from '../types';
 
 // Delay para simular latência de rede
@@ -457,6 +458,19 @@ export const mockStakingApi = {
     await delay();
     console.log('🏦 [Mock API] Buscando pools de staking...');
     return mockStakingPools;
+  },
+};
+
+/**
+ * Mock API para auditoria de segurança
+ */
+export const mockSecurityApi = {
+  /**
+   * Loga um evento de segurança
+   */
+  async logEvent(event: SecurityAuditEvent): Promise<void> {
+    await delay(100);
+    console.log('🛡️ [Mock API] Evento de segurança registrado:', event);
   },
 };
 

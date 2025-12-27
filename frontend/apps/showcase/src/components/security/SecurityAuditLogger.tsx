@@ -1,40 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotifications } from "../../hooks/useNotifications";
-
-export interface SecurityAuditEvent {
-  /** ID único do evento */
-  id: string;
-  /** Timestamp do evento */
-  timestamp: Date;
-  /** Tipo de evento */
-  eventType:
-    | "login"
-    | "logout"
-    | "transaction"
-    | "permission_change"
-    | "security_violation"
-    | "password_change"
-    | "kyc_update";
-  /** Nível de severidade */
-  severity: "low" | "medium" | "high" | "critical";
-  /** ID do usuário que executou a ação */
-  userId: string;
-  /** Papel do usuário */
-  userRole: string;
-  /** Endereço IP (simulado) */
-  ipAddress: string;
-  /** User Agent (simulado) */
-  userAgent: string;
-  /** Descrição da ação */
-  description: string;
-  /** Dados adicionais do evento */
-  metadata?: Record<string, any>;
-  /** Se a ação foi bem-sucedida */
-  success: boolean;
-  /** Mensagem de erro (se houver) */
-  errorMessage?: string;
-}
+import api from "../../services/api";
+import type { SecurityAuditEvent } from "../../types";
 
 export interface SecurityAuditLoggerProps {
   /** Se deve fazer log automático de eventos de autenticação */
@@ -119,12 +87,7 @@ export const useSecurityAuditLogger = () => {
     event: SecurityAuditEvent,
   ): Promise<void> => {
     try {
-      // Simulação de envio para backend
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // TODO: Implementar chamada real para API de auditoria
-      // await api.post('/api/v1/security/audit', event)
-
+      await api.security.logEvent(event);
       console.log("[Security Audit] Event sent to backend:", event.id);
     } catch (error) {
       console.error("[Security Audit] Failed to send event to backend:", error);

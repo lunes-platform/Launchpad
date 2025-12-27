@@ -122,3 +122,40 @@ export interface ApiResponse<T = any> {
   error?: string;
   message?: string;
 }
+
+/**
+ * Evento de auditoria de segurança
+ */
+export interface SecurityAuditEvent {
+  /** ID único do evento */
+  id: string;
+  /** Timestamp do evento */
+  timestamp: Date;
+  /** Tipo de evento */
+  eventType:
+    | "login"
+    | "logout"
+    | "transaction"
+    | "permission_change"
+    | "security_violation"
+    | "password_change"
+    | "kyc_update";
+  /** Nível de severidade */
+  severity: "low" | "medium" | "high" | "critical";
+  /** ID do usuário que executou a ação */
+  userId: string;
+  /** Papel do usuário */
+  userRole: string;
+  /** Endereço IP (simulado) */
+  ipAddress: string;
+  /** User Agent (simulado) */
+  userAgent: string;
+  /** Descrição da ação */
+  description: string;
+  /** Dados adicionais do evento */
+  metadata?: Record<string, any>;
+  /** Se a ação foi bem-sucedida */
+  success: boolean;
+  /** Mensagem de erro (se houver) */
+  errorMessage?: string;
+}

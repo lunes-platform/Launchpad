@@ -110,6 +110,7 @@ export const LUNES_API_CONFIG = {
     staking: "/lunes/staking",
     governance: "/lunes/governance",
     treasury: "/lunes/treasury",
+    securityAudit: "/security/audit",
   },
 
   /** Configurações de cache */
