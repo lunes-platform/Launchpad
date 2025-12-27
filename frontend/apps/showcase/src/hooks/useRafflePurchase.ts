@@ -5,6 +5,7 @@ import { usePolkadotApi } from './usePolkadotApi';
 import { useAuth } from '../contexts/AuthContext';
 import { useRaffleStore } from '../stores/raffleStore';
 import type { Raffle } from '../stores/raffleStore';
+import { lunesUtils } from '../config/lunes';
 
 /**
  * Interface para dados de compra de tickets
@@ -43,7 +44,7 @@ interface PurchaseValidation {
 export const useRafflePurchase = () => {
   const { user, isVip, isVerified } = useAuth();
   const { selectedAccount, isReady } = useWallet();
-  const { transfer, getBalance, isConnected: apiConnected } = usePolkadotApi();
+  const { transfer, getBalance, getRawBalance, isConnected: apiConnected } = usePolkadotApi();
   const { canPurchaseTickets } = useRaffleStore();
   const queryClient = useQueryClient();
   
@@ -274,12 +275,19 @@ export const useRafflePurchase = () => {
 
       try {
         const balance = await getBalance(selectedAccount.address);
+        const rawBalance = await getRawBalance(selectedAccount.address);
+
+        if (!rawBalance) {
+          return { hasBalance: false, currentBalance: balance || '0' };
+        }
+
         const requiredAmount = quantity * raffle.ticketPrice;
+        // Converter preço para unidades da blockchain (12 decimais)
+        const requiredAmountUnits = BigInt(lunesUtils.toLunesUnits(requiredAmount));
+        const currentBalanceUnits = BigInt(rawBalance);
         
-        // TODO: Implementar conversão correta de unidades
-        // Por enquanto, assumir que tem saldo suficiente se balance existe
         return {
-          hasBalance: !!balance,
+          hasBalance: currentBalanceUnits >= requiredAmountUnits,
           currentBalance: balance || '0',
         };
       } catch (error) {
