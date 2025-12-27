@@ -236,4 +236,53 @@ export class AuthController {
       });
     }
   }
+
+  async generateTwoFactor(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const user = request.user as any;
+      const data = await this.authService.generateTwoFactorSecret(user.userId);
+
+      reply.code(200).send({
+        success: true,
+        data
+      });
+    } catch (error: any) {
+      reply.code(400).send({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  async verifyTwoFactor(request: FastifyRequest<{ Body: { token: string } }>, reply: FastifyReply) {
+    try {
+      const user = request.user as any;
+      const { token } = request.body;
+      const isValid = await this.authService.verifyAndEnableTwoFactor(user.userId, token);
+
+      if (isValid) {
+        reply.code(200).send({ success: true, message: '2FA habilitado com sucesso' });
+      } else {
+        reply.code(400).send({ success: false, message: 'Código inválido' });
+      }
+    } catch (error: any) {
+      reply.code(400).send({ success: false, message: error.message });
+    }
+  }
+
+  async validateTwoFactor(request: FastifyRequest<{ Body: { token: string } }>, reply: FastifyReply) {
+    try {
+      const user = request.user as any;
+      const { token } = request.body;
+      const isValid = await this.authService.validateTwoFactor(user.userId, token);
+
+      if (isValid) {
+        reply.code(200).send({ success: true, valid: true });
+      } else {
+        reply.code(400).send({ success: false, valid: false, message: 'Código inválido' });
+      }
+    } catch (error: any) {
+      reply.code(400).send({ success: false, message: error.message });
+    }
+  }
 }

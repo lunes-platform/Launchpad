@@ -21,6 +21,8 @@ model User {
   bio               String?
   isVerified        Boolean  @default(false)
   isActive          Boolean  @default(true)
+  twoFactorEnabled  Boolean  @default(false)
+  twoFactorSecret   String?
   kycStatus         KycStatus @default(PENDING)
   kycData           Json?
   totalStaked       Decimal  @default(0) @db.Decimal(20, 8)

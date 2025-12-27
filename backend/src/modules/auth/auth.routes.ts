@@ -226,4 +226,60 @@ export async function authRoutes(fastify: FastifyInstance) {
       }
     }],
   }, authController.getProfile.bind(authController));
+
+  // 2FA Routes
+  const twoFactorSchema = {
+    tags: ['auth'],
+    security: [{ bearerAuth: [] }],
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean' },
+          data: { type: 'object', additionalProperties: true },
+          message: { type: 'string' },
+          valid: { type: 'boolean' }
+        }
+      }
+    }
+  };
+
+  const authHook = async (request: any, reply: any) => {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      reply.send(err);
+    }
+  };
+
+  fastify.post('/2fa/generate', {
+    schema: { ...twoFactorSchema, description: 'Gerar segredo 2FA' },
+    preHandler: [authHook]
+  }, authController.generateTwoFactor.bind(authController));
+
+  fastify.post('/2fa/verify', {
+    schema: {
+      ...twoFactorSchema,
+      description: 'Verificar e habilitar 2FA',
+      body: {
+        type: 'object',
+        required: ['token'],
+        properties: { token: { type: 'string' } }
+      }
+    },
+    preHandler: [authHook]
+  }, authController.verifyTwoFactor.bind(authController));
+
+  fastify.post('/2fa/validate', {
+    schema: {
+      ...twoFactorSchema,
+      description: 'Validar código 2FA',
+      body: {
+        type: 'object',
+        required: ['token'],
+        properties: { token: { type: 'string' } }
+      }
+    },
+    preHandler: [authHook]
+  }, authController.validateTwoFactor.bind(authController));
 }
