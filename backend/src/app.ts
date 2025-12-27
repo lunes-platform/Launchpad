@@ -69,6 +69,7 @@ class App {
       max: envConfig.RATE_LIMIT_MAX_REQUESTS,
       timeWindow: envConfig.RATE_LIMIT_WINDOW_MS,
       errorResponseBuilder: (request, context) => ({
+        statusCode: 429,
         code: 429,
         error: 'Rate Limit Exceeded',
         message: `Muitas tentativas. Tente novamente em ${Math.round(context.ttl / 1000)} segundos.`,
