@@ -72,7 +72,7 @@ export default function StakingPage() {
   useEffect(() => {
     fetchPools();
     if (selectedAccount?.address) {
-      fetchUserStakes();
+      fetchUserStakes(selectedAccount.address);
     }
   }, [fetchPools, fetchUserStakes, selectedAccount?.address]);
 
@@ -154,15 +154,15 @@ export default function StakingPage() {
 
   // Função para fazer stake
   const handleStake = async () => {
-    if (!selectedPool || !stakeAmount || !selectedAccount?.address) return;
+    if (!selectedPool || !stakeAmount || !selectedAccount) return;
     
     setIsProcessing(true);
     try {
-      await stakeTokens(selectedPool, stakeAmount);
+      await stakeTokens(selectedPool, stakeAmount, selectedAccount);
       setStakeAmount('');
       setShowStakeModal(false);
       // Recarregar dados
-      fetchUserStakes();
+      fetchUserStakes(selectedAccount.address);
     } catch (error) {
       console.error('Erro ao fazer stake:', error);
     } finally {
@@ -172,15 +172,15 @@ export default function StakingPage() {
 
   // Função para fazer unstake
   const handleUnstake = async () => {
-    if (!selectedPool || !unstakeAmount || !selectedAccount?.address) return;
+    if (!selectedPool || !unstakeAmount || !selectedAccount) return;
     
     setIsProcessing(true);
     try {
-      await unstakeTokens(selectedPool, unstakeAmount);
+      await unstakeTokens(selectedPool, unstakeAmount, selectedAccount);
       setUnstakeAmount('');
       setShowUnstakeModal(false);
       // Recarregar dados
-      fetchUserStakes();
+      fetchUserStakes(selectedAccount.address);
     } catch (error) {
       console.error('Erro ao fazer unstake:', error);
     } finally {
@@ -190,13 +190,13 @@ export default function StakingPage() {
 
   // Função para reivindicar recompensas
   const handleClaimRewards = async (poolId: string) => {
-    if (!selectedAccount?.address) return;
+    if (!selectedAccount) return;
     
     setIsProcessing(true);
     try {
-      await claimRewards(poolId);
+      await claimRewards(poolId, selectedAccount);
       // Recarregar dados
-      fetchUserStakes();
+      fetchUserStakes(selectedAccount.address);
     } catch (error) {
       console.error('Erro ao reivindicar recompensas:', error);
     } finally {

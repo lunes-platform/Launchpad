@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { ApiPromise } from '@polkadot/api';
+import { LaunchpoolService } from '../services/launchpoolService';
+import { CONTRACTS } from '../config/contracts';
 
 /**
  * Tipos para o sistema de Launchpool/Staking
@@ -50,6 +53,10 @@ interface LaunchpoolState {
   userStakes: UserStake[];
   transactions: StakingTransaction[];
   
+  // Serviços
+  api: ApiPromise | null;
+  launchpoolService: LaunchpoolService | null;
+
   // Estados de loading
   isLoading: boolean;
   isStaking: boolean;
@@ -61,12 +68,13 @@ interface LaunchpoolState {
   totalPendingRewards: string;
   
   // Ações
+  init: (api: ApiPromise) => void;
   fetchPools: () => Promise<void>;
-  fetchUserStakes: () => Promise<void>;
-  stakeTokens: (poolId: string, amount: string) => Promise<boolean>;
-  unstakeTokens: (poolId: string, amount: string) => Promise<boolean>;
-  claimRewards: (poolId: string) => Promise<boolean>;
-  claimAllRewards: () => Promise<boolean>;
+  fetchUserStakes: (address?: string) => Promise<void>;
+  stakeTokens: (poolId: string, amount: string, account?: any) => Promise<boolean>;
+  unstakeTokens: (poolId: string, amount: string, account?: any) => Promise<boolean>;
+  claimRewards: (poolId: string, account?: any) => Promise<boolean>;
+  claimAllRewards: (account?: any) => Promise<boolean>;
   calculateRewards: (poolId: string) => string;
   getPoolById: (poolId: string) => Pool | undefined;
   getUserStakeByPool: (poolId: string) => UserStake | undefined;
@@ -88,6 +96,9 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
     userStakes: [],
     transactions: [],
     
+    api: null,
+    launchpoolService: null,
+
     isLoading: false,
     isStaking: false,
     isUnstaking: false,
@@ -97,12 +108,18 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
     totalPendingRewards: '0',
     
     // Implementação das ações
+    init: (api: ApiPromise) => {
+        const service = new LaunchpoolService(api, CONTRACTS.LAUNCHPAD);
+        set({ api, launchpoolService: service });
+    },
+
     fetchPools: async () => {
       set({ isLoading: true });
       
       try {
         // TODO: Integrar com smart contract
         // Por enquanto, dados mock para desenvolvimento
+        // Na prática, isso viria de getLaunchpoolConfig ou eventos indexados
         const mockPools: Pool[] = [
           {
             id: 'lunes-main',
@@ -169,42 +186,95 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
       }
     },
     
-    fetchUserStakes: async () => {
+    fetchUserStakes: async (address?: string) => {
       set({ isLoading: true });
+      const { launchpoolService } = get();
       
       try {
-        // TODO: Integrar com smart contract para buscar stakes do usuário
-        const mockUserStakes: UserStake[] = [
-          {
-            poolId: 'lunes-main',
-            amount: '5000',
-            stakedAt: new Date('2024-01-15'),
-            lastClaimAt: new Date('2024-01-20'),
-            pendingRewards: '52.08', // Calculado baseado no APY
-            lockEndDate: new Date('2024-02-14'),
-            canWithdraw: true
-          },
-          {
-            poolId: 'lusdt-stable',
-            amount: '2000',
-            stakedAt: new Date('2024-01-20'),
-            pendingRewards: '11.23',
-            lockEndDate: new Date('2024-01-27'),
-            canWithdraw: false
-          }
-        ];
+        if (!launchpoolService) {
+             // Fallback para mock se serviço não inicializado ou endereço não fornecido
+             console.warn("LaunchpoolService not initialized or address missing, using mock data");
+
+             // ... existing mock logic ...
+             const mockUserStakes: UserStake[] = [
+                {
+                  poolId: 'lunes-main',
+                  amount: '5000',
+                  stakedAt: new Date('2024-01-15'),
+                  lastClaimAt: new Date('2024-01-20'),
+                  pendingRewards: '52.08',
+                  lockEndDate: new Date('2024-02-14'),
+                  canWithdraw: true
+                },
+                {
+                  poolId: 'lusdt-stable',
+                  amount: '2000',
+                  stakedAt: new Date('2024-01-20'),
+                  pendingRewards: '11.23',
+                  lockEndDate: new Date('2024-01-27'),
+                  canWithdraw: false
+                }
+              ];
+
+              const totalStaked = mockUserStakes.reduce((sum, stake) =>
+                sum + parseFloat(stake.amount), 0
+              ).toString();
+
+              const totalRewards = mockUserStakes.reduce((sum, stake) =>
+                sum + parseFloat(stake.pendingRewards), 0
+              ).toString();
+
+              set({
+                userStakes: mockUserStakes,
+                totalStakedByUser: totalStaked,
+                totalPendingRewards: totalRewards,
+                isLoading: false
+              });
+             return;
+        }
+
+        if (!address) {
+            set({
+                userStakes: [],
+                totalStakedByUser: '0',
+                totalPendingRewards: '0',
+                isLoading: false
+            });
+            return;
+        }
+
+        const stakeInfo = await launchpoolService.getUserStakeInfo(address);
+
+        let userStakes: UserStake[] = [];
+
+        if (stakeInfo && stakeInfo.isParticipating) {
+            // Se o usuário tem stake, vamos assumir que é no 'lunes-main' para este exemplo
+            // Em produção, iterariamos pelos pools para pegar alocação de cada um
+            // ou o contrato retornaria uma lista de participações
+            const pendingRewards = await launchpoolService.getClaimableAmount(address, 'lunes-main');
+
+            userStakes.push({
+                poolId: 'lunes-main',
+                amount: stakeInfo.amount,
+                stakedAt: stakeInfo.lastStakeTime,
+                lastClaimAt: undefined, // Poderia vir do contrato se adicionado ao struct
+                pendingRewards: pendingRewards,
+                lockEndDate: stakeInfo.unlockTime,
+                canWithdraw: new Date() >= stakeInfo.unlockTime
+            });
+        }
         
         // Calcular totais
-        const totalStaked = mockUserStakes.reduce((sum, stake) => 
+        const totalStaked = userStakes.reduce((sum, stake) =>
           sum + parseFloat(stake.amount), 0
         ).toString();
         
-        const totalRewards = mockUserStakes.reduce((sum, stake) => 
+        const totalRewards = userStakes.reduce((sum, stake) =>
           sum + parseFloat(stake.pendingRewards), 0
         ).toString();
         
         set({ 
-          userStakes: mockUserStakes,
+          userStakes: userStakes,
           totalStakedByUser: totalStaked,
           totalPendingRewards: totalRewards,
           isLoading: false 
@@ -216,11 +286,36 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
       }
     },
     
-    stakeTokens: async (poolId: string, amount: string) => {
+    stakeTokens: async (poolId: string, amount: string, account?: any) => {
       set({ isStaking: true });
+      const { launchpoolService } = get();
       
       try {
-        // TODO: Integrar com smart contract
+        if (launchpoolService && account) {
+             const txHash = await launchpoolService.stake(account, amount);
+
+             const newTransaction: StakingTransaction = {
+              id: `stake-${Date.now()}`,
+              type: 'stake',
+              poolId,
+              amount,
+              timestamp: new Date(),
+              status: 'confirmed',
+              txHash: txHash
+            };
+
+            set(state => ({
+              transactions: [newTransaction, ...state.transactions],
+              isStaking: false
+            }));
+
+            await get().fetchUserStakes(account.address);
+            await get().fetchPools();
+            return true;
+        }
+
+        // Mock fallback
+        console.warn("Using mock stakeTokens");
         // Simular transação por enquanto
         const newTransaction: StakingTransaction = {
           id: `stake-${Date.now()}`,
@@ -249,7 +344,7 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
         }));
         
         // Recarregar dados
-        await get().fetchUserStakes();
+        await get().fetchUserStakes(); // Vai usar o mock interno
         await get().fetchPools();
         
         return true;
@@ -261,11 +356,36 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
       }
     },
     
-    unstakeTokens: async (poolId: string, amount: string) => {
+    unstakeTokens: async (poolId: string, amount: string, account?: any) => {
       set({ isUnstaking: true });
+       const { launchpoolService } = get();
       
       try {
-        // TODO: Integrar com smart contract
+         if (launchpoolService && account) {
+             const txHash = await launchpoolService.unstake(account, amount);
+
+              const newTransaction: StakingTransaction = {
+                  id: `unstake-${Date.now()}`,
+                  type: 'unstake',
+                  poolId,
+                  amount,
+                  timestamp: new Date(),
+                  status: 'confirmed',
+                  txHash: txHash
+                };
+
+                set(state => ({
+                  transactions: [newTransaction, ...state.transactions],
+                  isUnstaking: false
+                }));
+
+                await get().fetchUserStakes(account.address);
+                await get().fetchPools();
+                return true;
+         }
+
+        // Mock fallback
+        console.warn("Using mock unstakeTokens");
         const newTransaction: StakingTransaction = {
           id: `unstake-${Date.now()}`,
           type: 'unstake',
@@ -302,13 +422,38 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
       }
     },
     
-    claimRewards: async (poolId: string) => {
+    claimRewards: async (poolId: string, account?: any) => {
       set({ isClaiming: true });
+       const { launchpoolService } = get();
       
       try {
-        // TODO: Integrar com smart contract
         const userStake = get().getUserStakeByPool(poolId);
         if (!userStake) throw new Error('Stake não encontrado');
+
+        if (launchpoolService && account) {
+             const txHash = await launchpoolService.claim(account, poolId);
+
+             const newTransaction: StakingTransaction = {
+              id: `claim-${Date.now()}`,
+              type: 'claim',
+              poolId,
+              amount: userStake.pendingRewards,
+              timestamp: new Date(),
+              status: 'confirmed',
+              txHash: txHash
+            };
+
+            set(state => ({
+              transactions: [newTransaction, ...state.transactions],
+              isClaiming: false
+            }));
+
+            await get().fetchUserStakes(account.address);
+            return true;
+        }
+
+        // Mock fallback
+        console.warn("Using mock claimRewards");
         
         const newTransaction: StakingTransaction = {
           id: `claim-${Date.now()}`,
@@ -345,14 +490,14 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
       }
     },
     
-    claimAllRewards: async () => {
+    claimAllRewards: async (account?: any) => {
       const { userStakes } = get();
       const stakesWithRewards = userStakes.filter(stake => 
         parseFloat(stake.pendingRewards) > 0
       );
       
       for (const stake of stakesWithRewards) {
-        const success = await get().claimRewards(stake.poolId);
+        const success = await get().claimRewards(stake.poolId, account);
         if (!success) return false;
       }
       
