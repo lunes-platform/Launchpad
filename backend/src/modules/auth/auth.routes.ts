@@ -206,6 +206,7 @@ export async function authRoutes(fastify: FastifyInstance) {
                 bio: { type: 'string' },
                 isVerified: { type: 'boolean' },
                 kycStatus: { type: 'string' },
+                isTwoFactorEnabled: { type: 'boolean' },
                 totalStaked: { type: 'string' },
                 totalRewards: { type: 'string' },
                 referralCode: { type: 'string' },
@@ -226,4 +227,68 @@ export async function authRoutes(fastify: FastifyInstance) {
       }
     }],
   }, authController.getProfile.bind(authController));
+
+  // 2FA Routes
+  const twoFactorAuth = async (request: any, reply: any) => {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      reply.send(err);
+    }
+  };
+
+  // POST /auth/2fa/generate
+  fastify.post('/2fa/generate', {
+    schema: {
+      description: 'Gerar segredo 2FA',
+      tags: ['auth'],
+      security: [{ bearerAuth: [] }],
+    },
+    preHandler: [twoFactorAuth]
+  }, authController.generate2FA.bind(authController));
+
+  // POST /auth/2fa/enable
+  fastify.post('/2fa/enable', {
+    schema: {
+      description: 'Habilitar 2FA com token',
+      tags: ['auth'],
+      security: [{ bearerAuth: [] }],
+      body: {
+        type: 'object',
+        required: ['token'],
+        properties: { token: { type: 'string' } }
+      }
+    },
+    preHandler: [twoFactorAuth]
+  }, authController.enable2FA.bind(authController));
+
+  // POST /auth/2fa/validate
+  fastify.post('/2fa/validate', {
+    schema: {
+      description: 'Validar token 2FA',
+      tags: ['auth'],
+      security: [{ bearerAuth: [] }],
+      body: {
+        type: 'object',
+        required: ['token'],
+        properties: { token: { type: 'string' } }
+      }
+    },
+    preHandler: [twoFactorAuth]
+  }, authController.validate2FA.bind(authController));
+
+    // POST /auth/2fa/disable
+  fastify.post('/2fa/disable', {
+    schema: {
+      description: 'Desabilitar 2FA com token',
+      tags: ['auth'],
+      security: [{ bearerAuth: [] }],
+      body: {
+        type: 'object',
+        required: ['token'],
+        properties: { token: { type: 'string' } }
+      }
+    },
+    preHandler: [twoFactorAuth]
+  }, authController.disable2FA.bind(authController));
 }

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Shield, AlertTriangle, Clock, CheckCircle } from "lucide-react";
 import { Modal, Button, Input, Alert } from "@launchpad/shared-ui";
 import { useAuth } from "../../contexts/AuthContext";
+import { authApiService } from "../../services/authApi.service";
 
 export type SecurityLevel = "low" | "medium" | "high" | "critical";
 
@@ -168,11 +169,11 @@ export const SecurityConfirmation: React.FC<SecurityConfirmationProps> = ({
         }
       }
 
-      // Simular validação de 2FA
+      // Validação de 2FA
       if (require2FA) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        // TODO: Implementar validação real de 2FA
-        if (twoFactorCode !== "123456") {
+        try {
+          await authApiService.validate2FA(twoFactorCode);
+        } catch (error) {
           setErrors(["Código de autenticação inválido"]);
           return;
         }

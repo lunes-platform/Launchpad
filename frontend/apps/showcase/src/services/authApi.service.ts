@@ -90,6 +90,10 @@ const AUTH_ENDPOINTS = {
   verify: "/auth/verify",
   logout: "/auth/logout",
   profile: "/auth/me",
+  generate2FA: "/auth/2fa/generate",
+  enable2FA: "/auth/2fa/enable",
+  validate2FA: "/auth/2fa/validate",
+  disable2FA: "/auth/2fa/disable",
 } as const;
 
 /**
@@ -222,6 +226,61 @@ export const authApiService = {
         method: "GET",
       },
       true, // Requer autenticação
+    );
+  },
+
+  /**
+   * Gera segredo 2FA
+   */
+  async generate2FA(): Promise<{ secret: string; otpauth: string }> {
+    return fetchAuthApi<{ secret: string; otpauth: string }>(
+      AUTH_ENDPOINTS.generate2FA,
+      {
+        method: "POST",
+      },
+      true
+    );
+  },
+
+  /**
+   * Ativa 2FA
+   */
+  async enable2FA(token: string): Promise<void> {
+    return fetchAuthApi<void>(
+      AUTH_ENDPOINTS.enable2FA,
+      {
+        method: "POST",
+        body: JSON.stringify({ token }),
+      },
+      true
+    );
+  },
+
+  /**
+   * Valida 2FA
+   */
+  async validate2FA(token: string): Promise<void> {
+    return fetchAuthApi<void>(
+      AUTH_ENDPOINTS.validate2FA,
+      {
+        method: "POST",
+        body: JSON.stringify({ token }),
+      },
+      true
+    );
+  },
+
+  /**
+   * Desativa 2FA
+   */
+  async disable2FA(token: string): Promise<void> {
+    return fetchAuthApi<void>(
+      AUTH_ENDPOINTS.disable2FA,
+      {
+        method: "POST",
+        body: JSON.stringify({ token }),
+      },
+      true
     );
   },
 

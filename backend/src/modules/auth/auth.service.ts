@@ -2,6 +2,7 @@ import { signatureVerify, cryptoWaitReady } from '@polkadot/util-crypto';
 import { u8aToHex, hexToU8a, stringToU8a } from '@polkadot/util';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { authenticator } from 'otplib';
 import { prisma } from '../../shared/database';
 import { redisService } from '../../shared/redis';
 import { Logger } from '../../shared/logger';
@@ -348,6 +349,7 @@ export class AuthService {
         bio: true,
         isVerified: true,
         kycStatus: true,
+        isTwoFactorEnabled: true,
         totalStaked: true,
         totalRewards: true,
         referralCode: true,
@@ -361,6 +363,92 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  // Gerar segredo 2FA
+  async generateTwoFactorSecret(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error('Usuário não encontrado');
+
+    const secret = authenticator.generateSecret();
+    const appName = 'Lunes Launchpad';
+    const otpauth = authenticator.keyuri(user.email || user.walletAddress, appName, secret);
+
+    // Salvar o segredo temporariamente no Redis ou retornar (aqui, retornamos para o front confirmar)
+    // Na prática, é melhor salvar no banco mas com isTwoFactorEnabled = false.
+    // Ou salvar no Redis até a confirmação.
+    // Vamos salvar no banco, mas a validação final (enable) é que muda o status.
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorSecret: secret }
+    });
+
+    return { secret, otpauth };
+  }
+
+  // Ativar 2FA
+  async enableTwoFactor(userId: string, token: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.twoFactorSecret) {
+      throw new Error('Setup de 2FA não iniciado');
+    }
+
+    const isValid = authenticator.verify({
+      token,
+      secret: user.twoFactorSecret
+    });
+
+    if (!isValid) {
+      throw new Error('Código inválido');
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isTwoFactorEnabled: true }
+    });
+
+    return true;
+  }
+
+  // Validar 2FA
+  async validateTwoFactor(userId: string, token: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error('Usuário não encontrado');
+
+    if (!user.isTwoFactorEnabled) {
+      // Se 2FA não está habilitado, tecnicamente qualquer validação passa ou deve ser erro?
+      // Depende da regra de negócio. Se é obrigatório, deve falhar se não tiver.
+      // Assumindo que o front só pede se require2FA for true.
+      throw new Error('2FA não habilitado para este usuário');
+    }
+
+    if (!user.twoFactorSecret) {
+       throw new Error('Erro de configuração 2FA');
+    }
+
+    const isValid = authenticator.verify({
+      token,
+      secret: user.twoFactorSecret
+    });
+
+    return isValid;
+  }
+
+  // Desativar 2FA
+  async disableTwoFactor(userId: string, token: string) {
+     const isValid = await this.validateTwoFactor(userId, token);
+     if (!isValid) throw new Error('Código inválido');
+
+     await prisma.user.update({
+       where: { id: userId },
+       data: {
+         isTwoFactorEnabled: false,
+         twoFactorSecret: null
+       }
+     });
+
+     return true;
   }
 
   // Verificar se token está na blacklist
