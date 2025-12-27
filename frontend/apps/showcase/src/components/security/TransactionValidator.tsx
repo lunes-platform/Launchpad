@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { UserRole, Permission } from "../../types/auth";
+import { usePolkadotApi } from "../../hooks/usePolkadotApi";
+import { lunesUtils } from "../../config/lunes";
 
 export interface ValidationResult {
   isValid: boolean;
@@ -73,6 +75,7 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
   children,
 }) => {
   const { user, hasPermission } = useAuth();
+  const { api, isConnected } = usePolkadotApi();
   const [isValidating, setIsValidating] = useState(false);
 
   const validateTransaction = useCallback(async (): Promise<void> => {
@@ -115,6 +118,8 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
     projectPhase,
     onValidationSuccess,
     onValidationError,
+    api, // Include api dependency
+    isConnected, // Include isConnected dependency
   ]);
 
   const performValidation = async (): Promise<ValidationResult> => {
@@ -254,6 +259,7 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
 
   const validateClaim = async (
     errors: string[],
+    // @ts-ignore
     warnings: string[],
   ): Promise<void> => {
     // Verificar permissão para claim
@@ -278,8 +284,38 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
       errors.push("Valor de saque deve ser maior que zero");
     }
 
-    // TODO: Verificar saldo disponível
-    // TODO: Verificar limites de saque
+    // Verificar limites do usuário (usando monthlyTransactionLimit como proxy para limite de saque)
+    const userLimits = user!.limits;
+    if (amount > userLimits.monthlyTransactionLimit) {
+      errors.push(
+        `Valor excede o limite mensal de transações (${userLimits.monthlyTransactionLimit} ${token})`,
+      );
+    }
+
+    // Verificar saldo disponível
+    if (token === "LUNES") {
+      if (isConnected && api && user?.walletAddress) {
+        try {
+          // @ts-ignore - api.query.system.account is typed correctly in dependencies
+          const accountInfo = await api.query.system.account(user.walletAddress) as any;
+          // data.free is u128 (extends BN)
+          const balanceStr = accountInfo.data.free.toString();
+
+          const amountInUnits = lunesUtils.toLunesUnits(amount);
+
+          if (BigInt(balanceStr) < BigInt(amountInUnits)) {
+            errors.push("Saldo insuficiente para realizar o saque");
+          }
+        } catch (error) {
+          console.error("Erro ao verificar saldo:", error);
+          warnings.push("Não foi possível verificar o saldo atual com precisão.");
+        }
+      } else {
+        warnings.push("Não foi possível conectar à rede para verificar saldo.");
+      }
+    } else {
+      warnings.push(`Verificação de saldo para ${token} não implementada.`);
+    }
 
     warnings.push(
       "Saques podem levar tempo para serem processados na blockchain",
