@@ -1,0 +1,350 @@
+{
+  "source": {
+    "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "language": "ink! 4.0.0",
+    "compiler": "rustc 1.70.0"
+  },
+  "contract": {
+    "name": "CompleteLaunchpad",
+    "version": "0.1.0",
+    "authors": ["Lunes"]
+  },
+  "spec": {
+    "constructors": [
+        {
+            "args": [
+                {
+                    "label": "admin",
+                    "type": {
+                        "displayName": [
+                            "AccountId"
+                        ],
+                        "type": 0
+                    }
+                },
+                {
+                    "label": "platform_fee_bps",
+                    "type": {
+                        "displayName": [
+                            "u16"
+                        ],
+                        "type": 4
+                    }
+                },
+                {
+                    "label": "project_revenue_fee_bps",
+                    "type": {
+                        "displayName": [
+                            "u16"
+                        ],
+                        "type": 4
+                    }
+                },
+                {
+                    "label": "project_listing_fee_lunes",
+                    "type": {
+                        "displayName": [
+                            "Balance"
+                        ],
+                        "type": 1
+                    }
+                },
+                {
+                    "label": "project_listing_fee_lusdt",
+                    "type": {
+                        "displayName": [
+                            "Balance"
+                        ],
+                        "type": 1
+                    }
+                },
+                {
+                    "label": "default_daily_limit",
+                    "type": {
+                        "displayName": [
+                            "Balance"
+                        ],
+                        "type": 1
+                    }
+                },
+                {
+                    "label": "default_project_limit",
+                    "type": {
+                        "displayName": [
+                            "Balance"
+                        ],
+                        "type": 1
+                    }
+                }
+            ],
+            "docs": [],
+            "label": "new",
+            "payable": false,
+            "selector": "0x9bae9d5e"
+        }
+    ],
+    "docs": [],
+    "events": [],
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "project_id",
+            "type": {
+              "displayName": [
+                "Hash"
+              ],
+              "type": 2
+            }
+          }
+        ],
+        "docs": [],
+        "label": "get_launchpool_config",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Option"
+          ],
+          "type": 5
+        },
+        "selector": "0x12345678"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "label": "get_total_staked",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Balance"
+          ],
+          "type": 1
+        },
+        "selector": "0x87654321"
+      },
+      {
+          "args": [
+              {
+                  "label": "user",
+                  "type": {
+                      "displayName": [
+                          "AccountId"
+                      ],
+                      "type": 0
+                  }
+              }
+          ],
+          "docs": [],
+          "label": "get_stake_info",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+              "displayName": [
+                  "StakeInfo"
+              ],
+              "type": 7
+          },
+          "selector": "0xabcdef12"
+      }
+    ]
+  },
+  "storage": {},
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 2,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "primitive": "u128"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 3
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+        "id": 4,
+        "type": {
+            "def": {
+                "primitive": "u16"
+            }
+        }
+    },
+    {
+        "id": 5,
+        "type": {
+            "def": {
+                "variant": {
+                    "variants": [
+                        {
+                            "index": 0,
+                            "name": "None"
+                        },
+                        {
+                            "fields": [
+                                {
+                                    "type": 6
+                                }
+                            ],
+                            "index": 1,
+                            "name": "Some"
+                        }
+                    ]
+                }
+            },
+            "params": [
+                {
+                    "name": "T",
+                    "type": 6
+                }
+            ],
+            "path": [
+                "Option"
+            ]
+        }
+    },
+    {
+        "id": 6,
+        "type": {
+            "def": {
+                "composite": {
+                    "fields": [
+                        {
+                            "name": "project_id",
+                            "type": 8
+                        },
+                        {
+                            "name": "total_allocation",
+                            "type": 1
+                        },
+                        {
+                            "name": "price_per_token_cents",
+                            "type": 9
+                        },
+                        {
+                            "name": "start_time",
+                            "type": 10
+                        },
+                        {
+                            "name": "end_time",
+                            "type": 10
+                        },
+                        {
+                            "name": "min_stake_required",
+                            "type": 1
+                        },
+                        {
+                            "name": "is_active",
+                            "type": 11
+                        }
+                    ]
+                }
+            },
+            "path": [
+                "launchpool_system",
+                "LaunchpoolConfig"
+            ]
+        }
+    },
+    {
+        "id": 7,
+        "type": {
+            "def": {
+                "composite": {
+                    "fields": [
+                        {
+                            "name": "amount",
+                            "type": 1
+                        },
+                        {
+                            "name": "last_stake_time",
+                            "type": 10
+                        },
+                        {
+                            "name": "unlock_time",
+                            "type": 10
+                        },
+                        {
+                            "name": "is_participating",
+                            "type": 11
+                        }
+                    ]
+                }
+            },
+            "path": [
+                "launchpool_system",
+                "StakeInfo"
+            ]
+        }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "primitive": "str"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+            "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+            "primitive": "u64"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+            "primitive": "bool"
+        }
+      }
+    }
+  ]
+}
