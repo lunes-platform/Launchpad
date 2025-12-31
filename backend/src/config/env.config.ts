@@ -163,7 +163,7 @@ export const envConfig: EnvConfig = {
   // Configurações
   BCRYPT_ROUNDS: getEnvNumber('BCRYPT_ROUNDS', 12),
   RATE_LIMIT_WINDOW_MS: getEnvNumber('RATE_LIMIT_WINDOW_MS', 900000),
-  RATE_LIMIT_MAX_REQUESTS: getEnvNumber('RATE_LIMIT_MAX_REQUESTS', 100),
+  RATE_LIMIT_MAX_REQUESTS: getEnvNumber('RATE_LIMIT_MAX_REQUESTS', 1000),
   CORS_ORIGIN: getEnvVar('CORS_ORIGIN', 'http://localhost:3000,http://localhost:5173'),
 
   // Logs e Debug
