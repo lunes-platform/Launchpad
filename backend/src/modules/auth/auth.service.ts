@@ -312,7 +312,8 @@ export class AuthService {
   // Logout
   async logout(token: string): Promise<void> {
     try {
-      const decoded = jwt.verify(token, this.JWT_SECRET) as TokenPayload;
+      // Decode with ignoreExpiration to allow logout even if token is expired
+      const decoded = jwt.verify(token, this.JWT_SECRET, { ignoreExpiration: true }) as TokenPayload;
       
       // Remover refresh token
       const key = `refresh_token:${decoded.userId}`;
