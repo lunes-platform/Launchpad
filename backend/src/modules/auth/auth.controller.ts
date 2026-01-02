@@ -22,6 +22,10 @@ const twoFactorSchema = z.object({
   token: z.string().length(6, 'O código deve ter 6 dígitos'),
 });
 
+const getNonceSchema = z.object({
+  walletAddress: z.string().min(1, 'Endereço da carteira é obrigatório'),
+});
+
 export class AuthController {
   private authService: AuthService;
 
@@ -208,15 +212,7 @@ export class AuthController {
   // GET /auth/nonce/:walletAddress
   async getNonce(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
-      const { walletAddress } = request.params as { walletAddress: string };
-
-      if (!walletAddress) {
-        reply.code(400).send({
-          success: false,
-          message: 'Endereço da carteira é obrigatório',
-        });
-        return;
-      }
+      const { walletAddress } = getNonceSchema.parse(request.params);
 
       const nonce = await this.authService.generateNonce(walletAddress);
       const timestamp = Date.now();
@@ -234,6 +230,15 @@ export class AuthController {
     } catch (error) {
       Logger.error('Erro ao gerar nonce', error);
       
+      if (error instanceof z.ZodError) {
+        reply.code(400).send({
+          success: false,
+          message: 'Dados inválidos',
+          errors: error.errors,
+        });
+        return;
+      }
+
       reply.code(500).send({
         success: false,
         message: 'Erro interno do servidor',
