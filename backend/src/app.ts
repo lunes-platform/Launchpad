@@ -64,17 +64,18 @@ class App {
       },
     });
 
-    // Rate Limiting - DESABILITADO PARA DESENVOLVIMENTO
-    // await this.server.register(rateLimit, {
-    //   max: envConfig.RATE_LIMIT_MAX_REQUESTS,
-    //   timeWindow: envConfig.RATE_LIMIT_WINDOW_MS,
-    //   errorResponseBuilder: (request, context) => ({
-    //     code: 429,
-    //     error: 'Rate Limit Exceeded',
-    //     message: `Muitas tentativas. Tente novamente em ${Math.round(context.ttl / 1000)} segundos.`,
-    //     expiresIn: context.ttl,
-    //   }),
-    // });
+    // Rate Limiting - Habilitado para segurança
+    await this.server.register(rateLimit, {
+      max: envConfig.RATE_LIMIT_MAX_REQUESTS,
+      timeWindow: envConfig.RATE_LIMIT_WINDOW_MS,
+      errorResponseBuilder: (request, context) => ({
+        statusCode: 429, // Required by error middleware
+        code: '429',
+        error: 'Too Many Requests',
+        message: `Muitas tentativas. Tente novamente em ${Math.round(context.ttl / 1000)} segundos.`,
+        expiresIn: context.ttl,
+      }),
+    });
 
     // Swagger Documentation
     if (envConfig.ENABLE_SWAGGER) {
