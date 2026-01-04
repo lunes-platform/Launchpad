@@ -224,9 +224,14 @@ export class AmaService {
     try {
       logger.info('Checking if user can create AMA', { userId, projectId });
 
-      // Simular verificação de propriedade do projeto
-      // Em produção, verificaria no banco se o usuário é owner do projeto
-      return true; // Mock: sempre permitir para teste
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        select: { creatorId: true },
+      });
+
+      if (!project) return false;
+
+      return project.creatorId === userId;
     } catch (error) {
       logger.error('Error checking AMA creation permission', { error });
       return false;
@@ -464,8 +469,26 @@ export class AmaService {
     try {
       logger.info('Checking if user can answer question', { userId, questionId });
 
-      // Simular verificação se o usuário é host da sessão
-      return true; // Mock: sempre permitir para teste
+      const question = await prisma.amaQuestion.findUnique({
+        where: { id: questionId },
+        select: {
+          ama: {
+            select: {
+              project: {
+                select: {
+                  creatorId: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!question || !question.ama || !question.ama.project) {
+        return false;
+      }
+
+      return question.ama.project.creatorId === userId;
     } catch (error) {
       logger.error('Error checking answer permission', { error });
       return false;
