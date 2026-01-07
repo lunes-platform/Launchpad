@@ -1,11 +1,17 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { ApiPromise } from '@polkadot/api';
+import { ContractPromise } from '@polkadot/api-contract';
+import CONTRACTS from '../config/contracts';
+import { formatBalance } from '@polkadot/util';
+import { blake2AsHex } from '@polkadot/util-crypto';
 
 /**
  * Tipos para o sistema de Launchpool/Staking
  */
 export interface Pool {
   id: string;
+  contractId?: string; // Hash do projeto no contrato (32 bytes hex)
   name: string;
   token: string;
   tokenAddress: string;
@@ -61,7 +67,7 @@ interface LaunchpoolState {
   totalPendingRewards: string;
   
   // Ações
-  fetchPools: () => Promise<void>;
+  fetchPools: (api?: ApiPromise) => Promise<void>;
   fetchUserStakes: () => Promise<void>;
   stakeTokens: (poolId: string, amount: string) => Promise<boolean>;
   unstakeTokens: (poolId: string, amount: string) => Promise<boolean>;
@@ -97,12 +103,10 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
     totalPendingRewards: '0',
     
     // Implementação das ações
-    fetchPools: async () => {
+    fetchPools: async (api?: ApiPromise) => {
       set({ isLoading: true });
       
       try {
-        // TODO: Integrar com smart contract
-        // Por enquanto, dados mock para desenvolvimento
         const mockPools: Pool[] = [
           {
             id: 'lunes-main',
@@ -154,11 +158,66 @@ export const useLaunchpoolStore = create<LaunchpoolState>()(devtools(
             participants: 0
           }
         ];
+
+        let updatedPools = [...mockPools];
+
+        if (api) {
+          try {
+            // Inicializar contrato
+            const contract = new ContractPromise(
+              api,
+              CONTRACTS.LAUNCHPAD.abi,
+              CONTRACTS.LAUNCHPAD.address
+            );
+
+            for (const pool of updatedPools) {
+              // Gerar Hash ID se não existir
+              const contractId = pool.contractId || blake2AsHex(pool.id, 256);
+
+              // 1. Buscar configuração do pool
+              const { result, output } = await contract.query.getLaunchpoolConfig(
+                CONTRACTS.LAUNCHPAD.address, // Endereço dummy para leitura
+                {},
+                contractId // Passar o Hash correto
+              );
+
+              if (result.isOk && output) {
+                const config = output.toPrimitive() as any;
+
+                if (config) {
+                  // Atualizar dados do pool com info do contrato
+                  pool.minStake = config.min_stake_required ? formatBalance(config.min_stake_required) : pool.minStake;
+                  pool.status = config.is_active ? 'active' : 'ended';
+                  // Converter timestamps
+                  if (config.start_time) pool.startDate = new Date(Number(config.start_time));
+                  if (config.end_time) pool.endDate = new Date(Number(config.end_time));
+
+                  // Salvar o ID usado para futuras referências
+                  pool.contractId = contractId;
+                }
+              }
+            }
+
+            // 2. Buscar total staked global
+            const { result: totalResult, output: totalOutput } = await contract.query.getTotalStaked(
+               CONTRACTS.LAUNCHPAD.address,
+               {}
+            );
+
+            if (totalResult.isOk && totalOutput) {
+               console.log('Total Staked on Contract:', totalOutput.toHuman());
+            }
+
+          } catch (contractError) {
+             console.error('Erro ao conectar com contrato:', contractError);
+             // Falha silenciosa, mantém dados mockados mas loga erro
+          }
+        }
         
-        const activePools = mockPools.filter(pool => pool.status === 'active');
+        const activePools = updatedPools.filter(pool => pool.status === 'active');
         
         set({ 
-          pools: mockPools, 
+          pools: updatedPools,
           activePools,
           isLoading: false 
         });
