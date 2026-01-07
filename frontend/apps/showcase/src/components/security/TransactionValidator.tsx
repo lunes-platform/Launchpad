@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { UserRole, Permission } from "../../types/auth";
+import { UserInvestment } from "../../types";
+import { TokenClaimService } from "../../services/tokenClaimService";
 
 export interface ValidationResult {
   isValid: boolean;
@@ -31,6 +33,8 @@ export interface TransactionValidatorProps {
   projectId?: string;
   /** Fase do projeto (para investimentos) */
   projectPhase?: string;
+  /** Dados do investimento (para claims) */
+  userInvestment?: UserInvestment;
   /** Callback executado quando a validação é bem-sucedida */
   onValidationSuccess: (result: ValidationResult) => void;
   /** Callback executado quando a validação falha */
@@ -68,6 +72,7 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
   token,
   projectId,
   projectPhase,
+  userInvestment,
   onValidationSuccess,
   onValidationError,
   children,
@@ -113,6 +118,7 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
     token,
     projectId,
     projectPhase,
+    userInvestment,
     onValidationSuccess,
     onValidationError,
   ]);
@@ -265,8 +271,21 @@ export const TransactionValidator: React.FC<TransactionValidatorProps> = ({
       return;
     }
 
-    // TODO: Verificar se há tokens/recompensas disponíveis para claim
-    // TODO: Verificar cronograma de vesting
+    if (userInvestment) {
+      // Usar o serviço de validação centralizado
+      const validation = TokenClaimService.validateClaim(userInvestment);
+      if (!validation.isValid) {
+        errors.push(...validation.errors);
+      }
+    } else {
+      // Validação básica se o objeto de investimento não for fornecido
+      if (amount <= 0) {
+        errors.push("Valor de claim deve ser maior que zero");
+      }
+      warnings.push(
+        "Dados completos do investimento não fornecidos para validação detalhada",
+      );
+    }
   };
 
   const validateWithdrawal = async (
