@@ -112,6 +112,11 @@ export const LUNES_API_CONFIG = {
     treasury: "/lunes/treasury",
   },
 
+  /** Endereços de Smart Contracts */
+  contracts: {
+    raffle: import.meta.env.VITE_RAFFLE_CONTRACT_ADDRESS || "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", // Alice Address Placeholder
+  },
+
   /** Configurações de cache */
   cache: {
     /** Tempo de cache para dados de projetos (5 minutos) */
