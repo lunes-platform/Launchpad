@@ -302,9 +302,18 @@ export class AuthService {
         throw new Error('Usuário não encontrado ou inativo');
       }
 
+      // Verificar se o token está na blacklist
+      const isBlacklisted = await this.isTokenBlacklisted(token);
+      if (isBlacklisted) {
+        throw new Error('Token inválido ou expirado');
+      }
+
       return decoded;
     } catch (error) {
       Logger.error('Erro ao verificar token', error);
+      if (error instanceof Error && error.message === 'Token inválido ou expirado') {
+        throw error;
+      }
       throw new Error('Token inválido');
     }
   }
