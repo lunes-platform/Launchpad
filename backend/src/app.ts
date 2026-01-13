@@ -17,6 +17,7 @@ import { logger } from './shared/logger';
 import { errorHandler, setupGlobalErrorHandlers } from './shared/middleware/error.middleware';
 import { loggingMiddleware } from './shared/middleware/logging.middleware';
 import { setupCors } from './shared/middleware/cors.middleware';
+import { AuthService } from './modules/auth/auth.service';
 
 // Importar rotas
 import { authRoutes } from './modules/auth/auth.routes';
@@ -62,6 +63,26 @@ class App {
       sign: {
         expiresIn: envConfig.JWT_EXPIRES_IN,
       },
+    });
+
+    // Hook para verificar blacklist de tokens
+    this.server.addHook('onRequest', async (request, reply) => {
+      const authHeader = request.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        try {
+          const isBlacklisted = await AuthService.getInstance().isTokenBlacklisted(token);
+          if (isBlacklisted) {
+            return reply.code(401).send({
+              statusCode: 401,
+              error: 'Unauthorized',
+              message: 'Token inválido ou expirado'
+            });
+          }
+        } catch (error) {
+          logger.error('Erro ao verificar blacklist de token', error);
+        }
+      }
     });
 
     // Rate Limiting - DESABILITADO PARA DESENVOLVIMENTO
