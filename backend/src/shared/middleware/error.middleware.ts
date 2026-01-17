@@ -46,6 +46,8 @@ export const errorHandler = (server: FastifyInstance) => {
     let statusCode = 500;
     if (error.statusCode) {
       statusCode = error.statusCode;
+    } else if ((error.code as unknown as number) === 429 || error.code === '429') {
+      statusCode = 429;
     } else if (error.code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
       statusCode = 401;
     } else if (error.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
