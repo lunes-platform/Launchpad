@@ -38,7 +38,7 @@ class App {
     this.setupErrorHandling();
   }
 
-  private async initialize(): Promise<void> {
+  public async initialize(): Promise<void> {
     await this.setupMiddlewares();
     await this.setupRoutes();
   }
@@ -64,17 +64,18 @@ class App {
       },
     });
 
-    // Rate Limiting - DESABILITADO PARA DESENVOLVIMENTO
-    // await this.server.register(rateLimit, {
-    //   max: envConfig.RATE_LIMIT_MAX_REQUESTS,
-    //   timeWindow: envConfig.RATE_LIMIT_WINDOW_MS,
-    //   errorResponseBuilder: (request, context) => ({
-    //     code: 429,
-    //     error: 'Rate Limit Exceeded',
-    //     message: `Muitas tentativas. Tente novamente em ${Math.round(context.ttl / 1000)} segundos.`,
-    //     expiresIn: context.ttl,
-    //   }),
-    // });
+    // Rate Limiting
+    await this.server.register(rateLimit, {
+      max: envConfig.RATE_LIMIT_MAX_REQUESTS,
+      timeWindow: envConfig.RATE_LIMIT_WINDOW_MS,
+      errorResponseBuilder: (request, context) => ({
+        statusCode: 429,
+        code: 'RATE_LIMIT_EXCEEDED',
+        error: 'Rate Limit Exceeded',
+        message: `Muitas tentativas. Tente novamente em ${Math.round(context.ttl / 1000)} segundos.`,
+        expiresIn: context.ttl,
+      }),
+    });
 
     // Swagger Documentation
     if (envConfig.ENABLE_SWAGGER) {
