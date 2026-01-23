@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { AmaController } from './ama.controller';
+import { authenticate } from '../../shared/middleware/auth.middleware';
 
 /**
  * Rotas para AMA (Ask Me Anything)
@@ -133,16 +134,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.getAmaSessions.bind(amaController));
 
   // GET /ama/sessions/:id - Obter sessão AMA específica
@@ -163,16 +155,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         200: { $ref: 'amaSessionResponse#' }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.getAmaSession.bind(amaController));
 
   // POST /ama/sessions - Criar nova sessão AMA
@@ -187,16 +170,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         201: { $ref: 'amaSessionResponse#' }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.createAmaSession.bind(amaController));
 
   // PUT /ama/sessions/:id - Atualizar sessão AMA
@@ -231,16 +205,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         200: { $ref: 'amaSessionResponse#' }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.updateAmaSession.bind(amaController));
 
   // GET /ama/sessions/:sessionId/questions - Listar perguntas de uma sessão
@@ -291,16 +256,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.getAmaQuestions.bind(amaController));
 
   // POST /ama/sessions/:sessionId/questions - Criar pergunta em uma sessão
@@ -329,16 +285,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.createAmaQuestion.bind(amaController));
 
   // PUT /ama/questions/:questionId/answer - Responder pergunta
@@ -367,16 +314,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.answerAmaQuestion.bind(amaController));
 
   // POST /ama/questions/:questionId/vote - Votar em pergunta
@@ -405,16 +343,7 @@ export const amaRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.voteAmaQuestion.bind(amaController));
 
   // GET /ama/sessions/:sessionId/stats - Estatísticas da sessão
@@ -449,15 +378,6 @@ export const amaRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: [authenticate]
   }, amaController.getAmaStats.bind(amaController));
 };
