@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { logger } from '../../shared/logger';
+import { authenticate } from '../../shared/middleware/auth.middleware';
 
 /**
  * Rotas para gerenciamento de projetos
@@ -151,11 +152,7 @@ export const projectRoutes = async (server: FastifyInstance) => {
     server.addHook('preHandler', async (request, reply) => {
       // Aplicar apenas para métodos que precisam de autenticação
       if (['POST', 'PUT', 'DELETE'].includes(request.method)) {
-        try {
-          await request.jwtVerify();
-        } catch (err) {
-          reply.send(err);
-        }
+        await authenticate(request, reply);
       }
     });
 
