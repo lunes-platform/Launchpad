@@ -60,7 +60,7 @@ export const errorHandler = (server: FastifyInstance) => {
     const errorResponse: any = {
       success: false,
       error: {
-        code: error.code || 'INTERNAL_SERVER_ERROR',
+        code: error.code || (statusCode === 429 ? 'RATE_LIMIT_EXCEEDED' : 'INTERNAL_SERVER_ERROR'),
         message: getErrorMessage(error, statusCode),
         timestamp: new Date().toISOString(),
         path: url,
