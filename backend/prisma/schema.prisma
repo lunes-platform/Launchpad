@@ -23,6 +23,7 @@ model User {
   isActive          Boolean  @default(true)
   isTwoFactorEnabled Boolean @default(false)
   twoFactorSecret   String?
+  role              UserRole  @default(USER)
   kycStatus         KycStatus @default(PENDING)
   kycData           Json?
   totalStaked       Decimal  @default(0) @db.Decimal(20, 8)
@@ -50,6 +51,11 @@ enum KycStatus {
   APPROVED
   REJECTED
   EXPIRED
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 // ===== PROJETOS =====
