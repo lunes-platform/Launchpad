@@ -3,6 +3,7 @@ import { u8aToHex, hexToU8a, stringToU8a } from '@polkadot/util';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { authenticator } from 'otplib';
+import { UserRole } from '@prisma/client';
 import { prisma } from '../../shared/database';
 import { redisService } from '../../shared/redis';
 import { Logger } from '../../shared/logger';
@@ -17,6 +18,7 @@ export interface LoginResult {
     avatar?: string;
     isVerified: boolean;
     kycStatus: string;
+    role: UserRole;
   };
   accessToken: string;
   refreshToken: string;
@@ -26,6 +28,7 @@ export interface LoginResult {
 export interface TokenPayload {
   userId: string;
   walletAddress: string;
+  role: UserRole;
   type: 'access' | 'refresh';
   iat: number;
   exp: number;
@@ -183,7 +186,7 @@ export class AuthService {
     }
 
     // Gerar tokens
-    const { accessToken, refreshToken } = await this.generateTokens(user.id, walletAddress);
+    const { accessToken, refreshToken } = await this.generateTokens(user.id, walletAddress, user.role);
 
     // Armazenar refresh token no Redis
     await this.storeRefreshToken(user.id, refreshToken);
@@ -204,6 +207,7 @@ export class AuthService {
         avatar: user.avatar || undefined,
         isVerified: user.isVerified,
         kycStatus: user.kycStatus,
+        role: user.role,
       },
       accessToken,
       refreshToken,
@@ -212,16 +216,18 @@ export class AuthService {
   }
 
   // Gerar tokens JWT
-  private async generateTokens(userId: string, walletAddress: string) {
+  private async generateTokens(userId: string, walletAddress: string, role: UserRole) {
     const accessTokenPayload: Omit<TokenPayload, 'iat' | 'exp'> = {
       userId,
       walletAddress,
+      role,
       type: 'access',
     };
 
     const refreshTokenPayload: Omit<TokenPayload, 'iat' | 'exp'> = {
       userId,
       walletAddress,
+      role,
       type: 'refresh',
     };
 
@@ -269,6 +275,7 @@ export class AuthService {
       const accessTokenPayload: Omit<TokenPayload, 'iat' | 'exp'> = {
         userId: user.id,
         walletAddress: user.walletAddress,
+        role: user.role,
         type: 'access',
       };
 
