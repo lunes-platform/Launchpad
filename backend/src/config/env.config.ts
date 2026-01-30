@@ -199,6 +199,13 @@ if (envConfig.NODE_ENV === 'production') {
     'LUNES_RPC_URL',
     'CONTRACT_ADDRESS',
     'PRIVATE_KEY',
+    'AWS_ACCESS_KEY_ID',
+    'AWS_SECRET_ACCESS_KEY',
+    'SMTP_USER',
+    'SMTP_PASS',
+    'KYC_API_KEY',
+    'PRICE_ORACLE_API',
+    'REDIS_PASSWORD',
   ];
 
   for (const varName of requiredProdVars) {
