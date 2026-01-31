@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { AnalyticsController } from './analytics.controller';
+import { authenticate } from '../../shared/middleware';
 
 /**
  * Rotas para Analytics
@@ -64,16 +65,7 @@ export const analyticsRoutes = async (server: FastifyInstance) => {
         200: { $ref: 'dashboardMetricsResponse#' }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: authenticate
   }, analyticsController.getDashboardMetrics.bind(analyticsController));
 
   // GET /analytics/projects - Métricas de projetos
@@ -108,16 +100,7 @@ export const analyticsRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: authenticate
   }, analyticsController.getProjectsMetrics.bind(analyticsController));
 
   // GET /analytics/users - Métricas de usuários (admin only)
@@ -161,21 +144,16 @@ export const analyticsRoutes = async (server: FastifyInstance) => {
       }
     },
     preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-        const user = (request as any).user;
-        
-        // Verificar se é admin
-        if (user.role !== 'ADMIN') {
-          return reply.status(403).send({
-            success: false,
-            error: 'Acesso negado - apenas administradores'
-          });
-        }
-      } catch (err) {
-        return reply.status(401).send({
+      await authenticate(request, reply);
+      if (reply.sent) return;
+
+      const user = (request as any).user;
+
+      // Verificar se é admin
+      if (user.role !== 'ADMIN') {
+        return reply.status(403).send({
           success: false,
-          error: 'Token de autorização inválido'
+          error: 'Acesso negado - apenas administradores'
         });
       }
     }
@@ -229,21 +207,16 @@ export const analyticsRoutes = async (server: FastifyInstance) => {
       }
     },
     preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-        const user = (request as any).user;
-        
-        // Verificar se é admin
-        if (user.role !== 'ADMIN') {
-          return reply.status(403).send({
-            success: false,
-            error: 'Acesso negado - apenas administradores'
-          });
-        }
-      } catch (err) {
-        return reply.status(401).send({
+      await authenticate(request, reply);
+      if (reply.sent) return;
+
+      const user = (request as any).user;
+
+      // Verificar se é admin
+      if (user.role !== 'ADMIN') {
+        return reply.status(403).send({
           success: false,
-          error: 'Token de autorização inválido'
+          error: 'Acesso negado - apenas administradores'
         });
       }
     }
@@ -287,16 +260,7 @@ export const analyticsRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: authenticate
   }, analyticsController.getPerformanceMetrics.bind(analyticsController));
 
   // POST /analytics/events - Registrar evento de analytics
@@ -317,16 +281,7 @@ export const analyticsRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: authenticate
   }, analyticsController.trackEvent.bind(analyticsController));
 
   await server.register(async function (server) {}, { prefix: '/analytics' });

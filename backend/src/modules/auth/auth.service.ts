@@ -287,6 +287,12 @@ export class AuthService {
   // Verificar token
   async verifyToken(token: string): Promise<TokenPayload> {
     try {
+      // Verificar se o token está na blacklist
+      const isBlacklisted = await this.isTokenBlacklisted(token);
+      if (isBlacklisted) {
+        throw new Error('Token revogado ou inválido');
+      }
+
       const decoded = jwt.verify(token, this.JWT_SECRET) as TokenPayload;
       
       if (decoded.type !== 'access') {
