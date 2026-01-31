@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { UserController } from './user.controller';
+import { authenticate } from '../../shared/middleware';
 
 /**
  * Rotas para gerenciamento de usuários
@@ -98,21 +99,16 @@ export const userRoutes = async (server: FastifyInstance) => {
       }
     },
     preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-        const user = (request as any).user;
-        
-        // Verificar se é admin
-        if (user.role !== 'ADMIN') {
-          return reply.status(403).send({
-            success: false,
-            error: 'Acesso negado - apenas administradores'
-          });
-        }
-      } catch (err) {
-        return reply.status(401).send({
+      await authenticate(request, reply);
+      if (reply.sent) return;
+
+      const user = (request as any).user;
+
+      // Verificar se é admin
+      if (user.role !== 'ADMIN') {
+        return reply.status(403).send({
           success: false,
-          error: 'Token de autorização inválido'
+          error: 'Acesso negado - apenas administradores'
         });
       }
     }
@@ -142,16 +138,7 @@ export const userRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: authenticate
   }, userController.getUserById.bind(userController));
 
   // PUT /users/:id - Atualizar perfil do usuário
@@ -180,16 +167,7 @@ export const userRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: authenticate
   }, userController.updateUser.bind(userController));
 
   // GET /users/:id/stats - Obter estatísticas do usuário
@@ -227,16 +205,7 @@ export const userRoutes = async (server: FastifyInstance) => {
         }
       }
     },
-    preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        return reply.status(401).send({
-          success: false,
-          error: 'Token de autorização inválido'
-        });
-      }
-    }
+    preHandler: authenticate
   }, userController.getUserStats.bind(userController));
 
   // PUT /users/:id/kyc - Atualizar status KYC (admin only)
@@ -266,21 +235,16 @@ export const userRoutes = async (server: FastifyInstance) => {
       }
     },
     preHandler: async (request, reply) => {
-      try {
-        await request.jwtVerify();
-        const user = (request as any).user;
-        
-        // Verificar se é admin
-        if (user.role !== 'ADMIN') {
-          return reply.status(403).send({
-            success: false,
-            error: 'Acesso negado - apenas administradores'
-          });
-        }
-      } catch (err) {
-        return reply.status(401).send({
+      await authenticate(request, reply);
+      if (reply.sent) return;
+
+      const user = (request as any).user;
+
+      // Verificar se é admin
+      if (user.role !== 'ADMIN') {
+        return reply.status(403).send({
           success: false,
-          error: 'Token de autorização inválido'
+          error: 'Acesso negado - apenas administradores'
         });
       }
     }
