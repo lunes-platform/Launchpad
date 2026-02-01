@@ -54,6 +54,8 @@ export const errorHandler = (server: FastifyInstance) => {
       statusCode = 401;
     } else if (error.validation) {
       statusCode = 400;
+    } else if ((error.code as any) === 429) {
+      statusCode = 429;
     }
 
     // Preparar resposta de erro
