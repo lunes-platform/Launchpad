@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { logger } from './logger';
+import { PrismaClient } from "@prisma/client";
+import { logger } from "./logger";
 
 /**
  * Cliente Prisma configurado para a aplicação
- * 
+ *
  * Features:
  * - Logging de queries em desenvolvimento
  * - Tratamento de erros de conexão
@@ -16,10 +16,11 @@ class DatabaseService {
 
   private constructor() {
     this.prisma = new PrismaClient({
-      log: process.env.NODE_ENV === 'development' 
-        ? ['query', 'info', 'warn', 'error']
-        : ['error'],
-      errorFormat: 'pretty',
+      log:
+        process.env.NODE_ENV === "development"
+          ? ["query", "info", "warn", "error"]
+          : ["error"],
+      errorFormat: "pretty",
     });
 
     this.setupMiddleware();
@@ -40,11 +41,11 @@ class DatabaseService {
       const result = await next(params);
       const after = Date.now();
 
-      logger.debug('Database query executed', {
+      logger.debug("Database query executed", {
         model: params.model,
         action: params.action,
         duration: `${after - before}ms`,
-        args: process.env.NODE_ENV === 'development' ? params.args : undefined
+        args: process.env.NODE_ENV === "development" ? params.args : undefined,
       });
 
       return result;
@@ -53,17 +54,17 @@ class DatabaseService {
     // Middleware para soft delete (se necessário)
     this.prisma.$use(async (params, next) => {
       // Interceptar operações de delete para implementar soft delete
-      if (params.action === 'delete') {
-        params.action = 'update';
-        params.args['data'] = { deletedAt: new Date() };
+      if (params.action === "delete") {
+        params.action = "update";
+        params.args["data"] = { deletedAt: new Date() };
       }
-      
-      if (params.action === 'deleteMany') {
-        params.action = 'updateMany';
+
+      if (params.action === "deleteMany") {
+        params.action = "updateMany";
         if (params.args.data != undefined) {
-          params.args.data['deletedAt'] = new Date();
+          params.args.data["deletedAt"] = new Date();
         } else {
-          params.args['data'] = { deletedAt: new Date() };
+          params.args["data"] = { deletedAt: new Date() };
         }
       }
 
@@ -104,9 +105,9 @@ class DatabaseService {
   public async connect(): Promise<void> {
     try {
       await this.prisma.$connect();
-      logger.info('Database connected successfully');
+      logger.info("Database connected successfully");
     } catch (error) {
-      logger.error('Failed to connect to database', { error });
+      logger.error("Failed to connect to database", { error });
       throw error;
     }
   }
@@ -117,9 +118,9 @@ class DatabaseService {
   public async disconnect(): Promise<void> {
     try {
       await this.prisma.$disconnect();
-      logger.info('Database disconnected successfully');
+      logger.info("Database disconnected successfully");
     } catch (error) {
-      logger.error('Failed to disconnect from database', { error });
+      logger.error("Failed to disconnect from database", { error });
       throw error;
     }
   }
@@ -132,7 +133,7 @@ class DatabaseService {
       await this.prisma.$queryRaw`SELECT 1`;
       return true;
     } catch (error) {
-      logger.error('Database health check failed', { error });
+      logger.error("Database health check failed", { error });
       return false;
     }
   }
@@ -141,7 +142,17 @@ class DatabaseService {
    * Executa transação
    */
   public async transaction<T>(
-    fn: (prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>
+    fn: (
+      prisma: Omit<
+        PrismaClient,
+        | "$connect"
+        | "$disconnect"
+        | "$on"
+        | "$transaction"
+        | "$use"
+        | "$extends"
+      >,
+    ) => Promise<T>,
   ): Promise<T> {
     return this.prisma.$transaction(fn);
   }
@@ -151,7 +162,7 @@ class DatabaseService {
    */
   public async clearCache(): Promise<void> {
     // Implementar limpeza de cache se necessário
-    logger.info('Database cache cleared');
+    logger.info("Database cache cleared");
   }
 }
 
@@ -183,10 +194,10 @@ export interface PaginationResult<T> {
 export function createPaginationResult<T>(
   data: T[],
   total: number,
-  options: PaginationOptions
+  options: PaginationOptions,
 ): PaginationResult<T> {
   const totalPages = Math.ceil(total / options.limit);
-  
+
   return {
     data,
     pagination: {
@@ -195,8 +206,8 @@ export function createPaginationResult<T>(
       total,
       totalPages,
       hasNext: options.page < totalPages,
-      hasPrev: options.page > 1
-    }
+      hasPrev: options.page > 1,
+    },
   };
 }
 
@@ -208,16 +219,16 @@ export interface DateFilter {
 
 export function createDateFilter(filter?: DateFilter) {
   if (!filter) return undefined;
-  
+
   const dateFilter: any = {};
   if (filter.from) dateFilter.gte = filter.from;
   if (filter.to) dateFilter.lte = filter.to;
-  
+
   return Object.keys(dateFilter).length > 0 ? dateFilter : undefined;
 }
 
 // Utilitários para ordenação
-export type SortOrder = 'asc' | 'desc';
+export type SortOrder = "asc" | "desc";
 
 export interface SortOptions {
   field: string;
@@ -225,11 +236,11 @@ export interface SortOptions {
 }
 
 export function createSortOptions(sort?: string): SortOptions {
-  if (!sort) return { field: 'createdAt', order: 'desc' };
-  
-  const [field, order] = sort.split(':');
+  if (!sort) return { field: "createdAt", order: "desc" };
+
+  const [field, order] = sort.split(":");
   return {
-    field: field || 'createdAt',
-    order: (order as SortOrder) || 'desc'
+    field: field || "createdAt",
+    order: (order as SortOrder) || "desc",
   };
 }
