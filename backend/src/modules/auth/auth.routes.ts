@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { AuthController } from './auth.controller';
+import { authenticate } from '../../shared/middleware';
 
 export async function authRoutes(fastify: FastifyInstance) {
   const authController = new AuthController();
@@ -181,6 +182,7 @@ export async function authRoutes(fastify: FastifyInstance) {
         },
       },
     },
+    preHandler: authenticate
   }, authController.logout.bind(authController));
 
   // GET /auth/me - Obter perfil do usuário autenticado
@@ -219,23 +221,8 @@ export async function authRoutes(fastify: FastifyInstance) {
         },
       },
     },
-    preHandler: [async (request, reply) => {
-      try {
-        await request.jwtVerify();
-      } catch (err) {
-        reply.send(err);
-      }
-    }],
+    preHandler: authenticate,
   }, authController.getProfile.bind(authController));
-
-  // 2FA Routes
-  const twoFactorAuth = async (request: any, reply: any) => {
-    try {
-      await request.jwtVerify();
-    } catch (err) {
-      reply.send(err);
-    }
-  };
 
   // POST /auth/2fa/generate
   fastify.post('/2fa/generate', {
@@ -244,7 +231,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       tags: ['auth'],
       security: [{ bearerAuth: [] }],
     },
-    preHandler: [twoFactorAuth]
+    preHandler: authenticate
   }, authController.generate2FA.bind(authController));
 
   // POST /auth/2fa/enable
@@ -259,7 +246,7 @@ export async function authRoutes(fastify: FastifyInstance) {
         properties: { token: { type: 'string' } }
       }
     },
-    preHandler: [twoFactorAuth]
+    preHandler: authenticate
   }, authController.enable2FA.bind(authController));
 
   // POST /auth/2fa/validate
@@ -274,7 +261,7 @@ export async function authRoutes(fastify: FastifyInstance) {
         properties: { token: { type: 'string' } }
       }
     },
-    preHandler: [twoFactorAuth]
+    preHandler: authenticate
   }, authController.validate2FA.bind(authController));
 
     // POST /auth/2fa/disable
@@ -289,6 +276,6 @@ export async function authRoutes(fastify: FastifyInstance) {
         properties: { token: { type: 'string' } }
       }
     },
-    preHandler: [twoFactorAuth]
+    preHandler: authenticate
   }, authController.disable2FA.bind(authController));
 }
