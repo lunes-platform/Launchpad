@@ -199,6 +199,12 @@ if (envConfig.NODE_ENV === 'production') {
     'LUNES_RPC_URL',
     'CONTRACT_ADDRESS',
     'PRIVATE_KEY',
+    // Security: Prevent using dev defaults in production
+    'AWS_ACCESS_KEY_ID',
+    'AWS_SECRET_ACCESS_KEY',
+    'SMTP_USER',
+    'SMTP_PASS',
+    'KYC_API_KEY',
   ];
 
   for (const varName of requiredProdVars) {
