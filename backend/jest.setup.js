@@ -1,0 +1,12 @@
+process.env.NODE_ENV = 'test';
+process.env.DATABASE_URL = 'postgresql://user:password@localhost:5432/launchpad_test';
+process.env.JWT_SECRET = 'test-secret-at-least-32-chars-long-to-pass-security-checks';
+process.env.LUNES_RPC_URL = 'http://localhost:8545';
+process.env.CONTRACT_ADDRESS = '0x1234567890123456789012345678901234567890';
+process.env.PRIVATE_KEY = '0000000000000000000000000000000000000000000000000000000000000000';
+process.env.SMTP_HOST = 'smtp.example.com';
+process.env.SMTP_USER = 'user';
+process.env.SMTP_PASS = 'pass';
+process.env.AWS_ACCESS_KEY_ID = 'test';
+process.env.AWS_SECRET_ACCESS_KEY = 'test';
+process.env.KYC_API_KEY = 'test';
