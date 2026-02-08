@@ -1,11 +1,12 @@
-import type { Project, UserInvestment, StakingPool } from "../types";
+import type { Project, UserInvestment, StakingPool, SecurityAuditEvent } from "../types";
 
 import { LUNES_API_CONFIG } from "../config/lunes";
 import { 
   shouldUseMockApi, 
   mockProjectsApi, 
   mockInvestmentsApi, 
-  mockStakingApi 
+  mockStakingApi,
+  mockSecurityApi
 } from "./mockApi";
 
 /**
@@ -312,6 +313,24 @@ export const stakingApi = {
 };
 
 /**
+ * Serviços de auditoria de segurança
+ */
+export const securityApi = {
+  /**
+   * Registra um evento de auditoria de segurança
+   */
+  async logEvent(event: SecurityAuditEvent): Promise<void> {
+    if (shouldUseMockApi()) {
+      return mockSecurityApi.logEvent(event);
+    }
+    return fetchApi(LUNES_API_CONFIG.endpoints.securityAudit, {
+      method: "POST",
+      body: JSON.stringify(event),
+    });
+  },
+};
+
+/**
  * Serviços relacionados a preços e cotações
  */
 export const pricesApi = {
@@ -422,5 +441,6 @@ export default {
   staking: stakingApi,
   prices: pricesApi,
   notifications: notificationsApi,
+  security: securityApi,
   handleError: handleApiError,
 };
