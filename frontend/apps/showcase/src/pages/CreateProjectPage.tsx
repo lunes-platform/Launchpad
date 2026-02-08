@@ -13,6 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
+import api from '../services/api';
 
 // Wrappers para resolver compatibilidade de tipos React 19
 const ArrowLeftIcon = ({ className, ...props }: { className?: string }) => {
@@ -569,11 +570,37 @@ export function CreateProjectPage() {
 
     setIsSubmitting(true);
     try {
-      // TODO: Implementar chamada para API
-      console.log('Dados do projeto:', formData);
+      const data = new FormData();
+
+      // Adiciona campos de texto simples e JSONs
+      Object.entries(formData).forEach(([key, value]) => {
+        // Ignora arquivos por enquanto, serão tratados separadamente se necessário ou
+        // se a API esperar que sejam anexados aqui
+        if (key === 'logo' || key === 'banner' || key === 'tokenSymbolImage' || key === 'thumbnailImage' || key === 'documents') {
+          return;
+        }
+
+        if (typeof value === 'object' && value !== null) {
+          // Serializa objetos complexos como JSON
+          data.append(key, JSON.stringify(value));
+        } else {
+          data.append(key, String(value));
+        }
+      });
+
+      // Adiciona arquivos
+      if (formData.logo) data.append('logo', formData.logo);
+      if (formData.banner) data.append('banner', formData.banner);
+      if (formData.tokenSymbolImage) data.append('tokenSymbolImage', formData.tokenSymbolImage);
+      if (formData.thumbnailImage) data.append('thumbnailImage', formData.thumbnailImage);
       
-      // Simular delay da API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (formData.documents && formData.documents.length > 0) {
+        formData.documents.forEach((doc) => {
+          data.append('documents', doc);
+        });
+      }
+
+      await api.projects.create(data);
       
       showSuccess(
         'Projeto criado com sucesso!',
@@ -589,7 +616,7 @@ export function CreateProjectPage() {
       showError(
         'Erro ao criar projeto',
         {
-          message: 'Ocorreu um erro inesperado. Tente novamente.'
+          message: api.handleError(error)
         }
       );
     } finally {

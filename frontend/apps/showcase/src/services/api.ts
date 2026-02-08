@@ -37,12 +37,17 @@ async function fetchApi<T>(
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
+  const headers: HeadersInit = { ...options.headers };
+
+  // Apenas define Content-Type como application/json se o corpo não for FormData
+  // Se for FormData, o navegador define automaticamente o Content-Type e o boundary
+  if (!(options.body instanceof FormData)) {
+    (headers as any)["Content-Type"] = "application/json";
+  }
+
   const config: RequestInit = {
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
     ...options,
+    headers,
   };
 
   try {
@@ -166,6 +171,16 @@ export const projectsApi = {
     return fetchApi<Project[]>(
       `${LUNES_API_CONFIG.endpoints.projects}/user/${userAddress}`,
     );
+  },
+
+  /**
+   * Cria um novo projeto
+   */
+  async create(data: FormData): Promise<Project> {
+    return fetchApi<Project>(LUNES_API_CONFIG.endpoints.projects, {
+      method: "POST",
+      body: data,
+    });
   },
 };
 
