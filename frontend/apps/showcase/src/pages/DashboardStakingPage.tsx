@@ -4,6 +4,7 @@ import { Badge } from "../components/ui/Badge";
 import { FadeIn } from "../components/animations/FadeIn";
 import { ScaleIn } from "../components/animations/ScaleIn";
 import { useLaunchpoolStore } from "../stores/launchpoolStore";
+import { useWallet } from "../contexts/WalletContext";
 import { 
   useUserStaking,
   useStakingPools,
@@ -36,9 +37,11 @@ export default function DashboardStakingPage() {
     userStakes,
     isLoading: poolsLoading, 
     fetchPools,
-    fetchUserStakes 
+    fetchUserStakes,
+    claimRewards
   } = useLaunchpoolStore();
   
+  const { selectedAccount } = useWallet();
   const { data: userStaking, isLoading: userStakingLoading } = useUserStaking("");
   const { data: stakingPools } = useStakingPools();
   const stakeMutation = useStake();
@@ -47,8 +50,10 @@ export default function DashboardStakingPage() {
 
   useEffect(() => {
     fetchPools();
-    fetchUserStakes();
-  }, [fetchPools, fetchUserStakes]);
+    if (selectedAccount?.address) {
+        fetchUserStakes(selectedAccount.address);
+    }
+  }, [fetchPools, fetchUserStakes, selectedAccount?.address]);
 
   // Função auxiliar para encontrar stake do usuário por pool
   const getUserStakeByPool = (poolId: string) => {
@@ -366,7 +371,13 @@ export default function DashboardStakingPage() {
                         {userStake?.pendingRewards && parseFloat(userStake.pendingRewards) > 0 && (
                           <button 
                             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                            onClick={() => console.log('Claim rewards from pool:', pool.id)}
+                            onClick={() => {
+                                if (selectedAccount) {
+                                    claimRewards(pool.id, selectedAccount).then(() => {
+                                        fetchUserStakes(selectedAccount.address);
+                                    });
+                                }
+                            }}
                           >
                             Claim
                           </button>

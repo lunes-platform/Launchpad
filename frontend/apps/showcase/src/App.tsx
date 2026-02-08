@@ -80,6 +80,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import "./index.css";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { UserRole } from "./types/auth";
+import { LaunchpoolInitializer } from "./components/LaunchpoolInitializer";
 
 /**
  * Layout principal da aplicação
@@ -117,6 +118,7 @@ function AppContent() {
 
   return (
     <>
+      <LaunchpoolInitializer />
       <AppLayout>
         <OutletComponent />
       </AppLayout>

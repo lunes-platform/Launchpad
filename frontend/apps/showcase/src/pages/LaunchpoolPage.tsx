@@ -5,6 +5,7 @@ import { FadeIn } from "../components/animations/FadeIn";
 import { ScaleIn } from "../components/animations/ScaleIn";
 import { useLaunchpoolStore } from "../stores/launchpoolStore";
 import { TrendingUp, Clock, Users, Coins } from "lucide-react";
+import { useWallet } from "../contexts/WalletContext";
 
 /**
  * Página do Launchpool - Exibe pools de liquidez e oportunidades de staking
@@ -15,12 +16,17 @@ export default function LaunchpoolPage() {
     pools, 
     isLoading, 
     fetchPools, 
-    stakeTokens 
+    stakeTokens,
+    fetchUserStakes
   } = useLaunchpoolStore();
+  const { selectedAccount } = useWallet();
 
   useEffect(() => {
     fetchPools();
-  }, [fetchPools]);
+    if (selectedAccount?.address) {
+        fetchUserStakes(selectedAccount.address);
+    }
+  }, [fetchPools, fetchUserStakes, selectedAccount?.address]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
